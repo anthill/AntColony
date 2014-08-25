@@ -1,0 +1,16 @@
+{
+  "name": "colony",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "delaunay-triangulate": "^1.1.6",
+    "game-shell": "^1.1.0",
+    "harmony-collections": "^0.3.8"
+  }
+}
