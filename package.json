@@ -1,16 +1,17 @@
 {
-  "name": "colony",
-  "version": "0.0.0",
-  "description": "",
+  "name": "AntColony",
+  "version": "0.1.0",
+  "description": "A ant colony simulation for our website",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Alexandre Vallette",
   "license": "MIT",
   "dependencies": {
     "delaunay-triangulate": "^1.1.6",
     "game-shell": "^1.1.0",
-    "harmony-collections": "^0.3.8"
+    "harmony-collections": "^0.3.8",
+    "parse-svg-path": "^0.1.1"
   }
 }
