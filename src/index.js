@@ -6,6 +6,12 @@ var Set = require("harmony-collections").Set;
 var dt = require("delaunay-triangulate");
 var parse = require('parse-svg-path')
 
+
+var nbRandomPoints = 100;
+var nbAnts = 200;
+var textMesh = false;
+var nbCity = 10;
+
 var sqrt = Math.sqrt;
 var pow = Math.pow;
 var floor = Math.floor;
@@ -56,29 +62,43 @@ function range(start, count) {
 
 function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
 
-var nbRandomPoints = 100;
-var nbAnts = 200;
+// initialize points
+var points = [];
+var citySet;
 
+if (textMesh){
 
-var myText = svgToPoints(svgString);
-var points = myText.points;
-var citySet = new Set(range(0, points.length));
-var scale = 0.5
+    var myText = svgToPoints(svgString);
+    points = myText.points;
+    citySet = new Set(range(0, points.length));
+    var scale = 0.5
 
-// scale points to [0,1] + scale
-var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));
-var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
-var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
-var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
-points = points.map(function(p){return {id:p.id, x: 0.4*(p.x-minX)/(maxX-minX)+0.25, y: 0.4*(p.y-minY)/(maxY-minY)+0.25}})
+    // scale points to [0,1] + scale
+    var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));
+    var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
+    var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
+    var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
+    points = points.map(function(p){return {id:p.id, x: 0.4*(p.x-minX)/(maxX-minX)+0.25, y: 0.4*(p.y-minY)/(maxY-minY)+0.25}})
 
+    //add random points
+    var nbPoints = points.length;
+    for(var i=0; i<nbRandomPoints; ++i) {
+        points.push({id : nbPoints, x:random(), y:random()});
+        nbPoints++;
+    }
 
-//add random points
-var nbPoints = points.length;
-for(var i=0; i<nbRandomPoints; ++i) {
-    points.push({id : nbPoints, x:random(), y:random()});
-    nbPoints++;
+} else {
+    //add random points
+    var nbPoints = 0;
+    for(var i=0; i<nbRandomPoints; ++i) {
+        points.push({id : nbPoints, x:random(), y:random()});
+        nbPoints++;
+    }
+    citySet = new Set(range(0, nbCity));
 }
+
+
+
 
 // triangulate
 var cells = dt(points.map(function(p){return [p.x, p.y]}))
