@@ -7,10 +7,11 @@ var dt = require("delaunay-triangulate");
 var parse = require('parse-svg-path')
 
 
-var nbRandomPoints = 100;
-var nbAnts = 100;
-var textMesh = false;
+var nbRandomPoints = 200;
+var nbAnts = 200;
+var textMesh = true;
 var nbCity = 10;
+var nbStartPoints = 30;
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;
@@ -103,7 +104,7 @@ if (textMesh){
     citySet = new Set(range(0, nbCity));
 }
 
-var startPoint = points[0];
+//var startPoint = points[0];
 
 
 // triangulate
@@ -129,7 +130,7 @@ cells.forEach(function(cell){
 
             var ptj = cell[( i + j ) % 3];
             //console.log("other: " + ptj);
-            var temp = [];
+            var temp = []; // equivalent of nexts, but for point ptj
             var newEdge = undefined;
 
             if ( nextEdges.has(points[pt]) ){ // if key already exists, add the corresponding edges
@@ -149,21 +150,26 @@ cells.forEach(function(cell){
                     //console.log("Trouvé 2");
                     newEdge = createEdge(points[pt], points[ptj]);
                     nexts.push(newEdge);
+                    edges.push(newEdge);
+                    //console.log(edges.length);
                 }
             }
             else {
                 //console.log("Trouvé 3");
                 newEdge = createEdge(points[pt], points[ptj]);
                 nexts.push(newEdge);
+                edges.push(newEdge);
+                //console.log(edges.length);
             }
-            if (newEdge != undefined)
-                {temp.push(newEdge);
+            if (newEdge != undefined){
+                temp.push(newEdge);
                 addToNextEdges(points[ptj], cell, temp, nextEdges); // add also the edge to the edge's other point's nextEdges
             }
         }
         //console.log("longueur: " + nexts.length);
         addToNextEdges(points[pt], cell, nexts, nextEdges);
     }
+    //console.log(edges.length);
 })
 
 //console.log("taille: " + nextEdges.size());
@@ -218,12 +224,26 @@ function getOtherPoint(edge, point){
 // initialize ants
 var population = new Array(nbAnts);
 var i,j;
+var possibleStartPointsId = [];
+
+function initializeStartPoints(){
+    for (var i = 0; i < nbStartPoints; i++)
+    {
+        possibleStartPointsId[i] = Math.floor(nbPoints * random());
+    }
+    console.log(possibleStartPointsId);
+}
+
+
+initializeStartPoints();
+
 for (i = 0; i < nbAnts; i++) {
     /*// take a random edge
     var edge = edges[Math.floor(edges.length*random())];
     var x = points[edge.source].x 
     var y = points[edge.source].y*/
-    var newAnt = new Ant(startPoint);
+    var randId = Math.floor(possibleStartPointsId.length * random());
+    var newAnt = new Ant(points[randId]);
     newAnt.setDirection();
     population[i] = newAnt;
 }
@@ -250,7 +270,6 @@ shell.on("render", function() {
     context.setTransform(w, 0, 0, h, 0, 0);
     context.fillStyle = "#fff";
     context.fillRect(0,0,w,h);
-    console.log('test');
 
     // edges
     context.strokeStyle = "#000";
@@ -263,8 +282,8 @@ shell.on("render", function() {
             context.lineWidth = 0.00001;
         }
         context.beginPath();
-        context.moveTo(points[edge.pt1].x, points[edge.pt1].y);
-        context.lineTo(points[edge.pt2].x, points[edge.pt2].y);
+        context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
+        context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
         context.stroke();
     }
 
@@ -336,7 +355,15 @@ function Ant(point) {
 // while foraging the ant choses the path with a pheromon preference
 
 function setDirection() {
-    var possibleEdges = nextEdges.get(this.origin);
+
+    var possibleEdges = [];
+
+    for (var i = 0; i < nextEdges.get(this.origin).length; i++)
+    {
+        possibleEdges[i] = nextEdges.get(this.origin)[i];
+    } 
+
+    possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
     // flip a coin and either take the smelliest path of a random one
     if (random() > 0.5){
         var smells = possibleEdges.map(function(e){return e.pheromon});
@@ -356,9 +383,9 @@ function move() {
     var cityReached = false;
     // on edge
     if (this.step < this.edge.distance){
-        this.posX += 0.005*Math.cos(this.edge.direction)*this.orientation;
-        this.posY += 0.005*Math.sin(this.edge.direction)*this.orientation;
-        this.step += 0.005;
+        this.posX += 0.01*Math.cos(this.edge.direction)*this.orientation;
+        this.posY += 0.01*Math.sin(this.edge.direction)*this.orientation;
+        this.step += 0.01;
         edgeChanged = false;
     // on vertex
     } else {
