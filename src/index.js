@@ -250,14 +250,16 @@ shell.on("render", function() {
     context.setTransform(w, 0, 0, h, 0, 0);
     context.fillStyle = "#fff";
     context.fillRect(0,0,w,h);
+    console.log('test');
 
     // edges
     context.strokeStyle = "#000";
     for(var i=0; i<edges.length; ++i) {
+        
         var edge = edges[i];
         if (edge.pheromon != 0){
             context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
-        }else {
+        } else {
             context.lineWidth = 0.00001;
         }
         context.beginPath();
@@ -367,7 +369,7 @@ function move() {
 
         this.setDirection();
 
-        cityReached = citySet.has(this.origin);
+        cityReached = citySet.has(this.origin.id);
         edgeChanged = true;
     }
     return {cityReached: cityReached, edgeChanged: edgeChanged};
@@ -380,23 +382,22 @@ function statemachine() {
             var res = this.move();
             if (res.cityReached) {
                 this.state = "pheromoning";
-                this.lastCity = this.origin;
+                this.lastCity = this.origin.id;
             };
             break;
         case "pheromoning":
-            console.log("pheromoning");
             var res = this.move();
             if (res.edgeChanged) {
                 this.edges.push(this.edge);
                 // found a city
-                if (res.cityReached && (this.origin != this.lastCity) ){
+                if (res.cityReached && (this.origin.id != this.lastCity) ){
                     // compute the length of the path
                     var pathLength = this.edges.map(function(e){return e.distance}).reduce(function(a,b){return a + b});
                     var deltaPheromone = 1/pathLength;
                     this.edges.forEach(function(e){e.pheromon += deltaPheromone});
                     // console.log(deltaPheromone, this.edges);
                     this.edges = [this.edge];
-                    this.lastCity = this.origin;
+                    this.lastCity = this.origin.id;
                 }
             }
           break;
