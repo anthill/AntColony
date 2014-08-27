@@ -8,7 +8,7 @@ var parse = require('parse-svg-path')
 
 
 var nbRandomPoints = 100;
-var nbAnts = 200;
+var nbAnts = 100;
 var textMesh = false;
 var nbCity = 10;
 
@@ -91,61 +91,141 @@ if (textMesh){
     //add random points
     var nbPoints = 0;
     for(var i=0; i<nbRandomPoints; ++i) {
-        points.push({id : nbPoints, x:random(), y:random()});
+        points.push({
+            id : nbPoints, 
+            x:random(), 
+            y:random()
+            /*x: (i % 10) + 1,
+            y: (i / 10) + 1*/
+        });
         nbPoints++;
     }
     citySet = new Set(range(0, nbCity));
 }
 
-
+var startPoint = points[0];
 
 
 // triangulate
-var cells = dt(points.map(function(p){return [p.x, p.y]}))
+var cells = dt(points.map(function(p){
+    return [p.x, p.y]
+}))
 
 // create edges
 var nextEdges = new Map();
 var edges = [];
-var permutations = [[0,1], [1,0], [0,2], [2,0], [1,2], [2,1]];
+//var permutations = [[0,1], [1,0], [0,2], [2,0], [1,2], [2,1]];
+var permutations = [[0,1], [0,2], [1,2]];
 var nbEdges = 0;
 cells.forEach(function(cell){
-  for(var i=0; i<permutations.length; ++i){
-    var s = permutations[i][0];
-    var d = permutations[i][1];
-    var ps = points[cell[s]];
-    var pd = points[cell[d]];
-    var distance = sqrt( pow(ps.x - pd.x, 2) + pow(ps.y - pd.y, 2) );
-    var edge = {id : nbEdges,
-          source: cell[s], 
-          destination: cell[d], 
-          distance : distance,
-          direction : Math.atan((pd.y-ps.y)/(pd.x-ps.x)),
-          orientation : sign((pd.x-ps.x)),
-          pheromon : 1/distance
-          };
-    var nexts;
-    if(nextEdges.has(ps.id)){
-        nexts = nextEdges.get(ps.id);
-        nexts.push(edge);
-    } else {
-        nexts = [edge];
+   
+    for (var i = 0; i < 3; ++i){  // for each point.id listed in current cell
+        var pt = cell[i];
+        var nexts = [];
+
+        //console.log("-------- id:" + pt);
+
+        for (var j = 1; j <= 2; ++j){ 
+
+            var ptj = cell[( i + j ) % 3];
+            //console.log("other: " + ptj);
+            var temp = [];
+            var newEdge = undefined;
+
+            if ( nextEdges.has(points[pt]) ){ // if key already exists, add the corresponding edges
+                //console.log("Trouvé 1");
+                var t = nextEdges.get(points[pt]);
+                var temppoints = t.map(function(e){
+                    return [e.pt1, e.pt2];
+                })
+
+                temppoints = temppoints.reduce(function(a, b){
+                     return a.concat(b);
+                });
+
+                //console.log(temppoints);
+
+                if (temppoints.indexOf(points[ptj]) == -1){
+                    //console.log("Trouvé 2");
+                    newEdge = createEdge(points[pt], points[ptj]);
+                    nexts.push(newEdge);
+                }
+            }
+            else {
+                //console.log("Trouvé 3");
+                newEdge = createEdge(points[pt], points[ptj]);
+                nexts.push(newEdge);
+            }
+            if (newEdge != undefined)
+                {temp.push(newEdge);
+                addToNextEdges(points[ptj], cell, temp, nextEdges); // add also the edge to the edge's other point's nextEdges
+            }
+        }
+        //console.log("longueur: " + nexts.length);
+        addToNextEdges(points[pt], cell, nexts, nextEdges);
     }
-    nextEdges.set(ps.id, nexts);
-    edges.push(edge);
-    nbEdges++;
-  }
-  
 })
+
+//console.log("taille: " + nextEdges.size());
+
+function createEdge(a, b){
+    var distance = sqrt( pow(a.x - b.x, 2) + pow(a.y - b.y, 2) );
+    var edge = {
+        id: nbEdges,
+        pt1: a, 
+        pt2: b, 
+        distance: distance,
+        direction: Math.atan((b.y-a.y)/(b.x-a.x)),
+        pheromon: 1/distance
+        //other: 
+    };
+    nbEdges ++;
+    return edge;
+}
+
+function addToNextEdges(a, cell, nexts, nextEdgesMap) {
+
+    if(nextEdgesMap.has(a))
+    {
+        var existingNextEdges = nextEdgesMap.get(a);
+        
+        // for every already existing next edge
+        for (var i = 0; i < existingNextEdges.length; i++)
+        {
+            // check if current existing edge is part of current cell
+            if (cell.indexOf(getOtherPoint(existingNextEdges[i], a)) == -1)
+                // if not, i.e if current edge hasn't been already added, push current edge
+                nexts.push(existingNextEdges[i]);
+        }
+        
+    }
+
+    // update nextEdges with new identified edges
+    nextEdgesMap.set(a, nexts);
+
+    //console.log("NextEdges de: " + a.id);
+    //console.log(nextEdges.get(a));
+}
+
+function getOtherPoint(edge, point){
+    // function that returns the other point of an edge
+    if (point == edge.pt1)
+        return edge.pt2;
+    else
+        return edge.pt1;
+}
 
 // initialize ants
 var population = new Array(nbAnts);
 var i,j;
 for (i = 0; i < nbAnts; i++) {
-    // take a random edge
+    /*// take a random edge
     var edge = edges[Math.floor(edges.length*random())];
     var x = points[edge.source].x 
-    var y = points[edge.source].y
-    population[i] = new Ant(x, y, edge);
+    var y = points[edge.source].y*/
+    var newAnt = new Ant(startPoint);
+    newAnt.setDirection();
+    population[i] = newAnt;
 }
 
 var canvas, context;
@@ -176,13 +256,13 @@ shell.on("render", function() {
     for(var i=0; i<edges.length; ++i) {
         var edge = edges[i];
         if (edge.pheromon != 0){
-            context.lineWidth = 0.00001 * edge.pheromon;
+            context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
         }else {
             context.lineWidth = 0.00001;
         }
         context.beginPath();
-        context.moveTo(points[edge.source].x, points[edge.source].y);
-        context.lineTo(points[edge.destination].x, points[edge.destination].y);
+        context.moveTo(points[edge.pt1].x, points[edge.pt1].y);
+        context.lineTo(points[edge.pt2].x, points[edge.pt2].y);
         context.stroke();
     }
 
@@ -219,7 +299,9 @@ shell.on("render", function() {
         context.beginPath()
         var x = population[i].posX //+ 0.01*random();
         var y = population[i].posY //+ 0.01*random();
-        if (population[i].state === "pheromoning"){context.fillStyle = "#FF0000"}
+        if (population[i].state === "pheromoning"){
+            context.fillStyle = "#FF0000";
+        }
         else {context.fillStyle = "#610B0B"}
         context.arc(x, y, 0.003, 0, 2*Math.PI)
         context.closePath()
@@ -228,16 +310,21 @@ shell.on("render", function() {
   
 })
 
-function Ant(x, y, edge) {                                            
-    this.posX = x;                
-    this.posY = y;
-    this.edge = edge;
+function Ant(point) {                                            
+    this.posX = point.x;                
+    this.posY = point.y;
+    this.edge = undefined;
     this.step = 0;
     this.state = "forage";
-    this.transit = statemachine; 
-    this.move = move;
     this.edges = [];
     this.lastCity = undefined;
+    this.origin = point;
+    this.destination = undefined;
+    this.orientation = undefined;
+    // methods
+    this.transit = statemachine; 
+    this.move = move;
+    this.setDirection = setDirection;
 }
 // forage: the ant wanders around without any pheromon deposition
 // once it finds a city, it starts remembering the nodes it goes through
@@ -246,30 +333,41 @@ function Ant(x, y, edge) {
 // it resets the list of nodes and continues
 // while foraging the ant choses the path with a pheromon preference
 
+function setDirection() {
+    var possibleEdges = nextEdges.get(this.origin);
+    // flip a coin and either take the smelliest path of a random one
+    if (random() > 0.5){
+        var smells = possibleEdges.map(function(e){return e.pheromon});
+        var index = smells.indexOf(Math.max.apply(Math, smells));
+        this.edge = possibleEdges[index];
+    } else {
+        this.edge = possibleEdges[floor(random()*possibleEdges.length)];
+    }
+    // set the destination point, being edge.pt1 or edge.pt2
+    this.destination = (this.origin == this.edge.pt1) ? this.edge.pt2 : this.edge.pt1;
+    this.orientation = sign((this.destination.x-this.origin.x));
+}
+
+
 function move() {
     var edgeChanged;
     var cityReached = false;
     // on edge
     if (this.step < this.edge.distance){
-        this.posX += 0.005*Math.cos(this.edge.direction)*this.edge.orientation;
-        this.posY += 0.005*Math.sin(this.edge.direction)*this.edge.orientation;
+        this.posX += 0.005*Math.cos(this.edge.direction)*this.orientation;
+        this.posY += 0.005*Math.sin(this.edge.direction)*this.orientation;
         this.step += 0.005;
         edgeChanged = false;
     // on vertex
     } else {
         this.step = 0;
-        this.posX = points[this.edge.destination].x;
-        this.posY = points[this.edge.destination].y;
-        var possibleEdges = nextEdges.get(this.edge.destination);
-        // flip a coin and either take the smelliest path of a random one
-        if (random() > 0.5){
-            var smells = possibleEdges.map(function(e){return e.pheromon});
-            var index = smells.indexOf(Math.max.apply(Math, smells));
-            this.edge = possibleEdges[index];
-        } else {
-            this.edge = possibleEdges[floor(random()*possibleEdges.length)];
-        }
-        cityReached = citySet.has(this.edge.source);
+        this.origin = this.destination;
+        this.posX = this.origin.x;
+        this.posY = this.origin.y;
+
+        this.setDirection();
+
+        cityReached = citySet.has(this.origin);
         edgeChanged = true;
     }
     return {cityReached: cityReached, edgeChanged: edgeChanged};
@@ -282,22 +380,23 @@ function statemachine() {
             var res = this.move();
             if (res.cityReached) {
                 this.state = "pheromoning";
-                this.lastCity = this.edge.source;
+                this.lastCity = this.origin;
             };
             break;
         case "pheromoning":
+            console.log("pheromoning");
             var res = this.move();
             if (res.edgeChanged) {
                 this.edges.push(this.edge);
                 // found a city
-                if (res.cityReached && (this.edge.source != this.lastCity) ){
+                if (res.cityReached && (this.origin != this.lastCity) ){
                     // compute the length of the path
                     var pathLength = this.edges.map(function(e){return e.distance}).reduce(function(a,b){return a + b});
                     var deltaPheromone = 1/pathLength;
                     this.edges.forEach(function(e){e.pheromon += deltaPheromone});
                     // console.log(deltaPheromone, this.edges);
                     this.edges = [this.edge];
-                    this.lastCity = this.edge.source;
+                    this.lastCity = this.origin;
                 }
             }
           break;
