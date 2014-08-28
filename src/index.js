@@ -7,11 +7,12 @@ var dt = require("delaunay-triangulate");
 var parse = require('parse-svg-path')
 
 
-var nbRandomPoints = 400;
-var nbAnts = 200;
+var nbRandomPoints = 100;
+var nbAnts = 1000;
+var antVelocity = 0.005;
 var textMesh = true;
 var nbCity = 10;
-var nbStartPoints = 10;
+var nbStartPoints = 50;
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;
@@ -66,6 +67,7 @@ function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
 // initialize points
 var points = [];
 var citySet;
+var textPointsId = [];
 
 if (textMesh){
 
@@ -79,7 +81,13 @@ if (textMesh){
     var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
     var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
     var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
-    points = points.map(function(p){return {id:p.id, x: 0.4*(p.x-minX)/(maxX-minX)+0.25, y: 0.4*(p.y-minY)/(maxY-minY)+0.25}})
+    points = points.map(function(p){
+        textPointsId.push(p.id);
+        return {
+            id:p.id, 
+            x: 0.4*(p.x-minX)/(maxX-minX)+0.25, 
+            y: 0.4*(p.y-minY)/(maxY-minY)+0.25}
+    });
 
     //add random points
     var nbPoints = points.length;
@@ -163,6 +171,18 @@ cells.forEach(function(cell){
                 addToNextEdges(points[ptj], cell, temp, nextEdges); // add also the edge to the edge's other point's nextEdges
             }
         }
+
+        if (textMesh && textPointsId.indexOf(pt) != -1 && pt < (textPointsId.length - 1)) // add the textEdges to nextEdges map
+        {
+            //console.log('verif');
+            var textEdge = createEdge(points[pt], points[pt+1]);
+            //var temp2 = [];
+            edges.push(textEdge);
+            nexts.push(textEdge);
+            //temp2.push(textEdge);
+            //addToNextEdges(points[pt+1], undefined, temp2, nextEdges);
+        }
+
         //console.log("longueur: " + nexts.length);
         addToNextEdges(points[pt], cell, nexts, nextEdges);
     }
@@ -172,12 +192,18 @@ cells.forEach(function(cell){
 //console.log("taille: " + nextEdges.size());
 
 function createEdge(a, b){
+    var poids = 1;
     var distance = sqrt( pow(a.x - b.x, 2) + pow(a.y - b.y, 2) );
+    if ((textPointsId.indexOf(a.id)) != -1 && (textPointsId.indexOf(b.id) != -1) && (Math.abs(a.id - b.id) == 1))
+    {
+        poids *= 5;
+    }
+
     var edge = {
         id: nbEdges,
         pt1: a, 
         pt2: b, 
-        distance: distance,
+        distance: distance/poids,
         direction: Math.atan((b.y-a.y)/(b.x-a.x)),
         pheromon: 1/distance
         //other: 
@@ -196,7 +222,7 @@ function addToNextEdges(a, cell, nexts, nextEdgesMap) {
         for (var i = 0; i < existingNextEdges.length; i++)
         {
             // check if current existing edge is part of current cell
-            if (cell.indexOf(getOtherPoint(existingNextEdges[i], a)) == -1)
+            if (cell != undefined && cell.indexOf(getOtherPoint(existingNextEdges[i], a)) == -1)
                 // if not, i.e if current edge hasn't been already added, push current edge
                 nexts.push(existingNextEdges[i]);
         }
@@ -228,7 +254,6 @@ function initializeStartPoints(){
     {
         possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
     }
-    console.log(possibleStartPointsId);
 }
 
 function generateRandStartPoint(){
@@ -312,15 +337,15 @@ shell.on("render", function() {
     // pheromon evaporation
     for (i = 0; i < edges.length; i++) {
         if(edges[i].pheromon > 0){
-            edges[i].pheromon -= 0.001;
+            edges[i].pheromon -= 0.0001;
         }
     }
 
 
     for(var i=0; i<population.length; ++i) {
         context.beginPath()
-        var x = population[i].posX //+ 0.01*random();
-        var y = population[i].posY //+ 0.01*random();
+        var x = population[i].posX + 0.005*random();
+        var y = population[i].posY + 0.005*random();
         if (population[i].state === "pheromoning"){
             context.fillStyle = "#FF0000";
         }
@@ -335,7 +360,7 @@ shell.on("render", function() {
 function Ant(point) {                                            
     this.posX = point.x;                
     this.posY = point.y;
-    this.velocity = 0.01;
+    this.velocity = antVelocity;
     this.edge = undefined;
     this.step = 0;
     this.state = "forage";
@@ -366,6 +391,7 @@ function setDirection() {
     } 
 
     possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
+
     // flip a coin and either take the smelliest path of a random one
     if (random() > 0.5){
         var smells = possibleEdges.map(function(e){return e.pheromon});
