@@ -7,11 +7,11 @@ var dt = require("delaunay-triangulate");
 var parse = require('parse-svg-path')
 
 
-var nbRandomPoints = 200;
+var nbRandomPoints = 400;
 var nbAnts = 200;
 var textMesh = true;
 var nbCity = 10;
-var nbStartPoints = 30;
+var nbStartPoints = 10;
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;
@@ -103,9 +103,6 @@ if (textMesh){
     }
     citySet = new Set(range(0, nbCity));
 }
-
-//var startPoint = points[0];
-
 
 // triangulate
 var cells = dt(points.map(function(p){
@@ -229,11 +226,16 @@ var possibleStartPointsId = [];
 function initializeStartPoints(){
     for (var i = 0; i < nbStartPoints; i++)
     {
-        possibleStartPointsId[i] = Math.floor(nbPoints * random());
+        possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
     }
     console.log(possibleStartPointsId);
 }
 
+function generateRandStartPoint(){
+    var randId = Math.floor(possibleStartPointsId.length * random());
+    var randStartPoint = points[possibleStartPointsId[randId]];
+    return randStartPoint;
+}
 
 initializeStartPoints();
 
@@ -242,8 +244,7 @@ for (i = 0; i < nbAnts; i++) {
     var edge = edges[Math.floor(edges.length*random())];
     var x = points[edge.source].x 
     var y = points[edge.source].y*/
-    var randId = Math.floor(possibleStartPointsId.length * random());
-    var newAnt = new Ant(points[randId]);
+    var newAnt = new Ant(generateRandStartPoint());
     newAnt.setDirection();
     population[i] = newAnt;
 }
@@ -334,6 +335,7 @@ shell.on("render", function() {
 function Ant(point) {                                            
     this.posX = point.x;                
     this.posY = point.y;
+    this.velocity = 0.01;
     this.edge = undefined;
     this.step = 0;
     this.state = "forage";
@@ -383,9 +385,9 @@ function move() {
     var cityReached = false;
     // on edge
     if (this.step < this.edge.distance){
-        this.posX += 0.01*Math.cos(this.edge.direction)*this.orientation;
-        this.posY += 0.01*Math.sin(this.edge.direction)*this.orientation;
-        this.step += 0.01;
+        this.posX += this.velocity*Math.cos(this.edge.direction)*this.orientation;
+        this.posY += this.velocity*Math.sin(this.edge.direction)*this.orientation;
+        this.step += this.velocity;
         edgeChanged = false;
     // on vertex
     } else {
