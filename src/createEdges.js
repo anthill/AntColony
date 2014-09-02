@@ -2,9 +2,14 @@
 
 var dt = require("delaunay-triangulate");
 
+var range = require('./utilities.js').range;
+
 var points = require('./initializePoints.js').points;
 var textMesh = require('./initializePoints.js').textMesh;
-var textPointsId = require('./initializePoints.js').textPointsId;
+//var textPointsId = require('./initializePoints.js').textPointsId;
+var citySet = require('./initializePoints.js').citySet;
+var nbRandomPoints = require('./initializePoints.js').nbRandomPoints;
+var forcedEdges = require('./initializePoints.js').forcedEdges;
 
 var Edge = require('./edge.js');
 
@@ -16,13 +21,25 @@ var cells = dt(points.map(function(p){
 var edges = [];
 var permutations = [[0,1], [0,2], [1,2]];
 
+// force the edges of the text to be edges of the graph
+if (textMesh) {
+    range(0, points.length - nbRandomPoints).forEach(function(id){
+        var directLink = forcedEdges.get(id);
+        var textEdge = Edge.create(points[id], points[directLink]);
+        edges.push(textEdge);
+        points[id].nexts.push(textEdge);
+        //addToNextEdges(points[pt], undefined, [textEdge], nextEdges);
+    })
+}
+
+
 cells.forEach(function(cell){
    
     for (var i = 0; i < 3; ++i){  // for each point.id listed in current cell
         var pt = points[cell[i]];
         //console.log("-------- id:" + pt);
 
-        for (var j = 1; j <= 2; ++j){ 
+        for (var j = 1; j < 3; ++j){ 
 
             var ptj = points[cell[( i + j ) % 3]]; // pick one of the other 2 points of the cell
             //console.log("--- other: " + ptj);
@@ -35,9 +52,7 @@ cells.forEach(function(cell){
                 // ... get the points corresponding ...
                 var tempPoints = pt.nexts.map(function(e){
                     return [e.pt1, e.pt2];
-                })
-
-                tempPoints = tempPoints.reduce(function(a, b){
+                }).reduce(function(a, b){
                      return a.concat(b);
                 });
 
@@ -48,16 +63,16 @@ cells.forEach(function(cell){
                     //console.log("Trouvé 2");
                     //newEdge = createEdge(points[pt], points[ptj]);
                     newEdge = Edge.create(pt, ptj);
-                    pt.nexts.push(newEdge);
                     edges.push(newEdge);
+                    pt.nexts.push(newEdge);
                     //console.log(edges.length);
                 }
             }
             else {
                 //console.log("Trouvé 3");
                 newEdge = Edge.create(pt, ptj);
-                pt.nexts.push(newEdge);
                 edges.push(newEdge);
+                pt.nexts.push(newEdge);
                 //console.log(edges.length);
             }
 
@@ -69,7 +84,8 @@ cells.forEach(function(cell){
         }
 
         // add the textEdges to nextEdges map
-        if (textMesh && textPointsId.indexOf(pt.id) != -1 && pt.id < (textPointsId.length - 1)) 
+        //if (textMesh && textPointsId.indexOf(pt.id) != -1 && pt.id < (textPointsId.length - 1)) 
+        if (textMesh && citySet.has(pt))
         {
             //console.log('verif');
             var textEdge = Edge.create(pt, points[pt.id + 1]);

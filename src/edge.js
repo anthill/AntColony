@@ -1,6 +1,6 @@
 'use strict';
 
-var Map = require("harmony-collections").Map;
+//var Map = require("harmony-collections").Map;
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;
@@ -11,8 +11,15 @@ var atan = Math.atan;
 
 
 function Edge(ptA, ptB) {
-    var distance = sqrt( pow(ptA.x - ptB.x, 2) + pow(ptA.y - ptB.y, 2) ),
-        direction = atan((ptB.y-ptA.y)/(ptB.x-ptA.x));
+    var distance = sqrt( pow(ptA.x - ptB.x, 2) + pow(ptA.y - ptB.y, 2) );
+    //    direction = atan((ptB.y-ptA.y)/(ptB.x-ptA.x));
+
+    var direction;
+    if (ptA.x != ptB.x){
+        direction = Math.atan((ptB.y-ptA.y)/(ptB.x-ptA.x));
+    } else {
+        direction = Math.PI/2;
+    }
 
     this.id = undefined;
     this.pt1 = ptA;

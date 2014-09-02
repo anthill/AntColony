@@ -3,6 +3,8 @@
 var shell = require("game-shell")();
 
 var points = require('./initializePoints.js').points;
+var citySet = require('./initializePoints.js').citySet;
+
 var edges = require('./createEdges.js');
 
 var population = require('./initializeAnts');
@@ -31,21 +33,21 @@ shell.on("render", function() {
     context.fillStyle = "#fff";
     context.fillRect(0,0,w,h);
 
-    // edges
-    context.strokeStyle = "#000";
-    for(var i=0; i < edges.length; ++i) {
-        context.lineWidth = 0.0001;
-        var edge = edges[i];
-        // if (edge.pheromon != 0){
-        //     context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
-        // } else {
-        //     context.lineWidth = 0.00001;
-        // }
-        context.beginPath();
-        context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
-        context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
-        context.stroke();
-    }
+    // // edges
+    // context.strokeStyle = "#000";
+    // for(var i=0; i < edges.length; ++i) {
+    //     context.lineWidth = 0.0001;
+    //     var edge = edges[i];
+    //     // if (edge.pheromon != 0){
+    //     //     context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
+    //     // } else {
+    //     //     context.lineWidth = 0.00001;
+    //     // }
+    //     context.beginPath();
+    //     context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
+    //     context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
+    //     context.stroke();
+    // }
 
     // // vertices
     // for(var i=0; i<points.length; ++i) {

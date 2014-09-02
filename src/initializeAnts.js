@@ -2,7 +2,7 @@
 
 var Ant = require('./ant.js');
 
-var nbAnts = 500;
+var nbAnts = 1000;
 
 var population = new Array(nbAnts);
 var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
