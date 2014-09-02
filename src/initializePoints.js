@@ -1,16 +1,20 @@
 'use strict'
 
 var Set = require("harmony-collections").Set;
+var parse = require('parse-svg-path');
 
 var range = require('./utilities.js').range;
 
+var Point = require('./point.js');
+
 var random = Math.random;
 
-var nbRandomPoints = 6;
-var nbCity = 1;
-var nbStartPoints = 3;
+var nbRandomPoints = 100;
+var nbStartPoints = 20;
 
-var textMesh = false;
+var nbCity = 1;
+
+var textMesh = true;
 
 // Frame definition
 var xInit = 0, yInit = 0;
@@ -75,36 +79,69 @@ if (textMesh){
     var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
     points = points.map(function(p){
         textPointsId.push(p.id);
-        return {
-            id:p.id, 
-            x: 0.4*(p.x-minX)/(maxX-minX)+0.25, 
-            y: 0.4*(p.y-minY)/(maxY-minY)+0.25}
+        var x = 0.4*(p.x-minX)/(maxX-minX)+0.25;
+        var y = 0.4*(p.y-minY)/(maxY-minY)+0.25;
+        var newPoint = new Point(x, y);
+        newPoint.id = p.id;
+
+        // return {
+        //     id: p.id, 
+        //     x: 0.4*(p.x-minX)/(maxX-minX)+0.25, 
+        //     y: 0.4*(p.y-minY)/(maxY-minY)+0.25
+        // }
+
+        return newPoint;
     });
 
     //add random points
     var nbPoints = points.length;
     for(var i=0; i<nbRandomPoints; ++i) {
-        points.push({
-            id : nbPoints,
-            x: random() * w + xInit,
-            y: random() * h + yInit
-            // x:random(),
-            // y:random()
-        });
+
+        var x = random() * w + xInit;
+        var y = random() * h + yInit;
+
+        var newPoint = new Point(x, y);
+        newPoint.id = nbPoints;
+
+        points.push(newPoint);
+
+        // points.push({
+        //     id: nbPoints,
+        //     x: random() * w + xInit,
+        //     y: random() * h + yInit
+        //     // x:random(),
+        //     // y:random()
+        // });
+
         nbPoints++;
     }
 
 } else {
     //add random points
+
     var nbPoints = 0;
     for(var i=0; i<nbRandomPoints; ++i) {
-        points.push({
-            id : nbPoints, 
-            x:random(), 
-            y:random()
-        });
+
+        var x = random();
+        var y = random();
+
+        var newPoint = new Point(x, y);
+        newPoint.id = nbPoints;
+
+        points.push(newPoint);
+        
         nbPoints++;
     }
+
+    // var nbPoints = 0;
+    // for(var i=0; i<nbRandomPoints; ++i) {
+    //     points.push({
+    //         id : nbPoints, 
+    //         x:random(), 
+    //         y:random()
+    //     });
+    //     nbPoints++;
+    // }
     citySet = new Set(range(0, nbCity));
 }
 

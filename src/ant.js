@@ -7,9 +7,9 @@ var sign = require('./utilities.js').sign;
 
 var points = require('./initializePoints.js').points;
 var citySet = require('./initializePoints.js').citySet;
+var textPointsId = require('./initializePoints.js').textPointsId;
 var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
-var nextEdges = require('./varEdges.js').nextEdges;
 var antVelocity = require('./antVelocity.js');
 var mouse = require('./mouse.js');
 
@@ -87,9 +87,10 @@ Ant.prototype = {
     setDirection: function(){
         var possibleEdges = [];
 
-        for (var i = 0; i < nextEdges.get(this.origin).length; i++)
+        //for (var i = 0; i < nextEdges.get(this.origin).length; i++)
+        for (var i = 0; i < this.origin.nexts.length; i++)
         {
-            possibleEdges[i] = nextEdges.get(this.origin)[i];
+            possibleEdges[i] = this.origin.nexts[i];
         } 
 
         possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
