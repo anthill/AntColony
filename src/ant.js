@@ -10,7 +10,6 @@ var citySet = require('./initializePoints.js').citySet;
 var textPointsId = require('./initializePoints.js').textPointsId;
 var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
-var antVelocity = require('./antVelocity.js');
 var mouse = require('./mouse.js');
 
 
