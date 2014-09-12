@@ -11,7 +11,6 @@
   "dependencies": {
     "delaunay-triangulate": "^1.1.6",
     "game-shell": "^1.1.0",
-    "harmony-collections": "^0.3.8",
     "parse-svg-path": "^0.1.1"
   }
 }
