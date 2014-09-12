@@ -18,6 +18,11 @@ shell.on("init", function() {
     canvas.height = shell.height;
     context = canvas.getContext("2d");
     shell.element.appendChild(canvas);
+    
+    shell.element.addEventListener('click', function(e){
+        console.log('click', e, shell.paused);
+        shell.paused = !shell.paused;
+    });
 })
 
 shell.on("resize", function(w, h) {
@@ -25,7 +30,7 @@ shell.on("resize", function(w, h) {
     canvas.height = h;
 })
 
-shell.on("render", function() {
+shell.on("tick", function() {
     var w = canvas.width;
     var h = canvas.height;
     var mouse = [shell.mouseX/w, shell.mouseY/h];
@@ -84,22 +89,21 @@ shell.on("render", function() {
         // var y = population[i].posY + 0.005*random();
         var x = population[i].posX;
         var y = population[i].posY;
-        if (population[i].state === "pheromoning"){
-            context.fillStyle = "#FF0000";
-        }
-        else {context.fillStyle = "#610B0B"}
-        context.arc(x, y, 0.003, 0, 2*Math.PI)
-        context.closePath()
-        context.fill()
+        context.fillStyle = population[i].state === "pheromoning" ? "#FF0000" : "#610B0B" ;
+        context.arc(x, y, 0.003, 0, 2*Math.PI);
+        context.closePath();
+        context.fill();
     }
 
     context.beginPath();
-    context.fillStyle = "#AAAAAA"
+    context.fillStyle = "#AAAAAA";
     context.arc(mouse[0], mouse[1], 0.01, 0, 2*Math.PI);
     context.closePath();
     context.fill();
   
-})
+});
+
+
 
 module.exports = {
 	canvas: canvas,
