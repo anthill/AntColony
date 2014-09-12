@@ -16,6 +16,6 @@ var nbEdges = edges.length;
 
 // edges verification
 for (var i = 0; i < points.length; i++) {
-    console.log('Longueur de ' + i + ': ' + points[i].nexts.length);
+    //console.log('Longueur de ' + i + ': ' + points[i].nexts.length);
 }
 console.log('nb of edges: ' + nbEdges);
