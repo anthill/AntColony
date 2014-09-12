@@ -4,6 +4,8 @@ var random = Math.random;
 var floor = Math.floor;
 
 var sign = require('./utilities.js').sign;
+var calculateDistance = require('./utilities.js').distance;
+var norm = require('./utilities.js').norm;
 
 var points = require('./initializePoints.js').points;
 var citySet = require('./initializePoints.js').citySet;
@@ -14,17 +16,18 @@ var mouse = require('./mouse.js');
 
 
 function Ant(point) {
-    this.posX = point.x;                
-    this.posY = point.y;
+    this.x = point.x;                
+    this.y = point.y;
     this.velocity = 0.005;
     this.edge = undefined;
-    this.step = 0;
+    //this.step = 0;
     this.state = "forage";
     this.edges = [];
     this.lastCity = undefined;
     this.origin = point;
     this.destination = undefined;
     this.orientation = undefined;
+    this.prog = 0;
 }
 // forage: the ant wanders around without any pheromon deposition
 // once it finds a city, it starts remembering the nodes it goes through
@@ -66,14 +69,13 @@ Ant.prototype = {
                     this.edges.forEach(function(e){
                         var a = e.pt1, b = e.pt2, weight = 1;  
                         // increased dropped pheromons for textEdges
-                        //if ((textPointsId.indexOf(a.id)) != -1 && (textPointsId.indexOf(b.id) != -1) && (Math.abs(a.id - b.id) == 1))
                         if (citySet.has(a.id) && citySet.has(b.id) && (Math.abs(a.id - b.id) == 1))
                         {
                             weight *= 10;
                         }
                         e.pheromon += (deltaPheromone * weight);
                     });
-                    // console.log(deltaPheromone, this.edges);
+
                     this.edges = [this.edge];
                     this.lastCity = this.origin.id;
                 }
@@ -86,7 +88,6 @@ Ant.prototype = {
     setDirection: function(){
         var possibleEdges = [];
 
-        //for (var i = 0; i < nextEdges.get(this.origin).length; i++)
         for (var i = 0; i < this.origin.nexts.length; i++)
         {
             possibleEdges[i] = this.origin.nexts[i];
@@ -105,30 +106,54 @@ Ant.prototype = {
 
         // set the destination point, being edge.pt1 or edge.pt2
         this.destination = (this.origin == this.edge.pt1) ? this.edge.pt2 : this.edge.pt1;
-        //this.orientation = sign((this.destination.x-this.origin.x));
         if (this.destination.x != this.origin.x)
             this.orientation = sign((this.destination.x-this.origin.x));
         else
             this.orientation = sign((this.destination.y-this.origin.y));
-        
     },
 
     move: function(){
         var edgeChanged;
         var cityReached = false;
+
         // on edge
-        if (this.step < this.edge.distance){
+        if (this.prog < this.edge.distance){
+
             var delta = this.avoidObstacle();
-            this.posX += (this.velocity*Math.cos(this.edge.direction)*this.orientation + delta.x*0.003);
-            this.posY += (this.velocity*Math.sin(this.edge.direction)*this.orientation + delta.y*0.003);
-            this.step += this.velocity;
+            var distance = this.edge.calculateDistance(this.x, this.y);
+            var deltaB = {x:0, y:0};
+
+            // return to edge if too far
+            if (distance > 0.003) {
+                var line = this.edge.line;
+                var sign = 1;
+
+                if (this.y > -(line.a * this.x + line.c)/line.b)
+                    sign *= -1;
+
+                deltaB = {
+                    x: sign * line.a,
+                    y: sign * line.b
+                }
+            }
+
+            this.x += (this.velocity*Math.cos(this.edge.direction)*this.orientation + delta.x*0.007 + deltaB.x*0.004);
+            this.y += (this.velocity*Math.sin(this.edge.direction)*this.orientation + delta.y*0.007 + deltaB.y*0.004);
+
+            this.prog = this.calculateProgression();
+            // this.prog = calculateDistance(this, this.origin);
+            console.log(this.prog/this.edge.distance);
+            
+
             edgeChanged = false;
+
         // on vertex
         } else {
             this.step = 0;
+            this.prog = 0;
             this.origin = this.destination;
-            this.posX = this.origin.x;
-            this.posY = this.origin.y;
+            this.x = this.origin.x;
+            this.y = this.origin.y;
 
             this.setDirection();
 
@@ -139,18 +164,37 @@ Ant.prototype = {
     },
 
     avoidObstacle: function(){
-        var distance = Math.sqrt(Math.pow(this.posX - mouse.x, 2) + Math.pow(this.posY - mouse.y, 2));
+        // var distance = Math.sqrt(Math.pow(this.x - mouse.x, 2) + Math.pow(this.y - mouse.y, 2));
+        var distance = calculateDistance(this, mouse);
     
         if (distance <= mouse.r)
         {
             return {
-                x: (this.posX - mouse.x)/distance,
-                y: (this.posY - mouse.y)/distance
+                x: (this.x - mouse.x)/distance,
+                y: (this.y - mouse.y)/distance
+                // x: (this.y - mouse.y)/distance,
+                // y: - (this.x - mouse.x)/distance
             };
+
+            this.direction
         }
         else
             return {x:0,y:0};
+    },
+
+    calculateProgression: function(){
+        var v = {
+            x: this.x - this.origin.x,
+            y: this.y - this.origin.y
+        }
+
+        var theta = (v.x * this.edge.line.v.x + v.y * this.edge.line.v.y) / norm(v);
+        var prog = norm(v) * Math.abs(theta)
+
+        // returns length of projection on edge
+        return prog;
     }
+
 };
 
 module.exports = Ant;

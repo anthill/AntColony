@@ -9,12 +9,12 @@ var Point = require('./point.js');
 
 var random = Math.random;
 
-var nbRandomPoints = 100;
+var nbRandomPoints = 50;
 var nbStartPoints = 20;
 
 var nbCity = 2;
 
-var textMesh = true;
+var textMesh = false;
 
 // Frame definition
 var xInit = 0, yInit = 0;

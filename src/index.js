@@ -6,6 +6,7 @@ var floor = Math.floor;
 var random = Math.random;
 var atan = Math.atan;
 
+var norm = require('./utilities.js').norm;
 
 // create points
 var points = require('./initializePoints.js').points;
@@ -14,11 +15,13 @@ var points = require('./initializePoints.js').points;
 var edges = require('./createEdges.js');
 var nbEdges = edges.length;
 
-// edges verification
-for (var i = 0; i < points.length; i++) {
-    console.log('Longueur de ' + i + ': ' + points[i].nexts.length);
-}
-console.log('nb of edges: ' + nbEdges);
+// console.log(norm(edges[0].line.v));
+
+// // edges verification
+// for (var i = 0; i < points.length; i++) {
+//     console.log('Longueur de ' + i + ': ' + points[i].nexts.length);
+// }
+// console.log('nb of edges: ' + nbEdges);
 
 // initialize ants
 var population = require('./initializeAnts.js');
