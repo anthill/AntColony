@@ -5,7 +5,7 @@ var floor = Math.floor;
 
 var sign = require('./utilities.js').sign;
 var calculateDistance = require('./utilities.js').distance;
-var norm = require('./utilities.js').norm;
+// var norm = require('./utilities.js').norm;
 
 var points = require('./initializePoints.js').points;
 var citySet = require('./initializePoints.js').citySet;
@@ -13,6 +13,8 @@ var textPointsId = require('./initializePoints.js').textPointsId;
 var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
 var mouse = require('./mouse.js');
+
+var Vector = require('./vector.js');
 
 
 function Ant(point) {
@@ -27,6 +29,7 @@ function Ant(point) {
     this.origin = point;
     this.destination = undefined;
     this.orientation = undefined;
+    this.direction = new Vector(0,0);
     this.prog = 0;
 }
 // forage: the ant wanders around without any pheromon deposition
@@ -106,10 +109,21 @@ Ant.prototype = {
 
         // set the destination point, being edge.pt1 or edge.pt2
         this.destination = (this.origin == this.edge.pt1) ? this.edge.pt2 : this.edge.pt1;
-        if (this.destination.x != this.origin.x)
-            this.orientation = sign((this.destination.x-this.origin.x));
-        else
-            this.orientation = sign((this.destination.y-this.origin.y));
+        // if (this.destination.x != this.origin.x)
+        //     this.orientation = sign((this.destination.x-this.origin.x));
+        // else
+        //     this.orientation = sign((this.destination.y-this.origin.y));
+        // if (this.destination.x != this.origin.x)
+        //     this.direction.x = sign((this.destination.x-this.origin.x)) * this.edge.direction.x;
+        // else
+        //     this.direction.y = sign((this.destination.y-this.origin.y)) * this.edge.direction.y;
+
+
+
+        this.direction.x = this.destination.x - this.origin.x; 
+        this.direction.y = this.destination.y - this.origin.y;
+
+        this.direction.normalize();
     },
 
     move: function(){
@@ -120,31 +134,17 @@ Ant.prototype = {
         if (this.prog < this.edge.distance){
 
             var delta = this.avoidObstacle();
-            var distance = this.edge.calculateDistance(this.x, this.y);
-            var deltaB = {x:0, y:0};
+            
+            // this.x += (this.velocity*Math.cos(this.edge.direction)*this.orientation + delta.x*0.002 /*+ deltaB.x*0.002*/);
+            // this.y += (this.velocity*Math.sin(this.edge.direction)*this.orientation + delta.y*0.002 /*+ deltaB.y*0.002*/);
 
-            // return to edge if too far
-            if (distance > 0.003) {
-                var line = this.edge.line;
-                var sign = 1;
-
-                if (this.y > -(line.a * this.x + line.c)/line.b)
-                    sign *= -1;
-
-                deltaB = {
-                    x: sign * line.a,
-                    y: sign * line.b
-                }
-            }
-
-            this.x += (this.velocity*Math.cos(this.edge.direction)*this.orientation + delta.x*0.007 + deltaB.x*0.004);
-            this.y += (this.velocity*Math.sin(this.edge.direction)*this.orientation + delta.y*0.007 + deltaB.y*0.004);
+            this.x += this.velocity * this.direction.x + delta.x * 0.005;
+            this.y += this.velocity * this.direction.y + delta.y * 0.005;
 
             this.prog = this.calculateProgression();
             // this.prog = calculateDistance(this, this.origin);
-            console.log(this.prog/this.edge.distance);
+            //console.log(this.prog / this.edge.distance);
             
-
             edgeChanged = false;
 
         // on vertex
@@ -166,31 +166,49 @@ Ant.prototype = {
     avoidObstacle: function(){
         // var distance = Math.sqrt(Math.pow(this.x - mouse.x, 2) + Math.pow(this.y - mouse.y, 2));
         var distance = calculateDistance(this, mouse);
+        var distanceEdge = this.edge.calculateDistance(this.x, this.y);
     
         if (distance <= mouse.r)
         {
+            if (distanceEdge > 0.001){
+                this.direction.x = this.destination.x - this.x + this.edge.orthDirection.x * 0.0; 
+                this.direction.y = this.destination.y - this.y + this.edge.orthDirection.y * 0.0;
+                this.direction.normalize();
+            }
+
             return {
                 x: (this.x - mouse.x)/distance,
                 y: (this.y - mouse.y)/distance
+                // x: (this.x - mouse.x)/distance + this.edge.line.a,
+                // y: (this.y - mouse.y)/distance + this.edge.line.b
                 // x: (this.y - mouse.y)/distance,
                 // y: - (this.x - mouse.x)/distance
             };
+        //else 
 
-            this.direction
+            // this.direction.normalize();
+            // var line = this.edge.line;
+            // var sign = 1;
+
+            // if (this.y > -(line.a * this.x + line.c)/line.b)
+            //     sign *= -1;
+
+            // return {
+            //     x: sign * line.a,
+            //     y: sign * line.b
+            // };
         }
         else
-            return {x:0,y:0};
+            return {x:0, y:0};
     },
 
     calculateProgression: function(){
-        var v = {
-            x: this.x - this.origin.x,
-            y: this.y - this.origin.y
-        }
+        var v = new Vector(this.x - this.origin.x, this.y - this.origin.y);
+        var norm = v.norm();
 
-        var theta = (v.x * this.edge.line.v.x + v.y * this.edge.line.v.y) / norm(v);
-        var prog = norm(v) * Math.abs(theta)
-
+        var theta = (v.x * this.edge.direction.x + v.y * this.edge.direction.y) / norm;
+        var prog = norm * Math.abs(theta);
+        //console.log(v.norm);
         // returns length of projection on edge
         return prog;
     }

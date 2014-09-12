@@ -6,7 +6,7 @@ var edges = require('./createEdges.js');
 var mouse = {
     x: 0,
     y: 0,
-    r: 0.04
+    r: 0.05
 };
 
 
@@ -20,9 +20,9 @@ window.addEventListener( 'mousemove', function(e){
     // console.log('Distance: ' + d);
 });
 
-window.addEventListener( 'click', function(e){
-    var point = new Point(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
-    console.log(edges[0].calculateDistance(point));
-});
+// window.addEventListener( 'click', function(e){
+//     var point = new Point(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
+//     console.log(edges[0].calculateDistance(point));
+// });
 
 module.exports = mouse;
