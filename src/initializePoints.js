@@ -1,6 +1,5 @@
 'use strict'
-var Map = require("harmony-collections").Map;
-var Set = require("harmony-collections").Set;
+
 var parse = require('parse-svg-path');
 
 var range = require('./utilities.js').range;
@@ -153,8 +152,7 @@ if (textMesh){
 // initialize start points
 var possibleStartPointsId = [];
 
-for (var i = 0; i < nbStartPoints; i++)
-{
+for (var i = 0; i < nbStartPoints; i++){
     possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
 }
 
