@@ -5,7 +5,6 @@ var floor = Math.floor;
 
 var sign = require('./utilities.js').sign;
 var calculateDistance = require('./utilities.js').distance;
-// var norm = require('./utilities.js').norm;
 
 var points = require('./initializePoints.js').points;
 var citySet = require('./initializePoints.js').citySet;
@@ -22,7 +21,6 @@ function Ant(point) {
     this.y = point.y;
     this.velocity = 0.005;
     this.edge = undefined;
-    //this.step = 0;
     this.state = "forage";
     this.edges = [];
     this.lastCity = undefined;
@@ -109,16 +107,6 @@ Ant.prototype = {
 
         // set the destination point, being edge.pt1 or edge.pt2
         this.destination = (this.origin == this.edge.pt1) ? this.edge.pt2 : this.edge.pt1;
-        // if (this.destination.x != this.origin.x)
-        //     this.orientation = sign((this.destination.x-this.origin.x));
-        // else
-        //     this.orientation = sign((this.destination.y-this.origin.y));
-        // if (this.destination.x != this.origin.x)
-        //     this.direction.x = sign((this.destination.x-this.origin.x)) * this.edge.direction.x;
-        // else
-        //     this.direction.y = sign((this.destination.y-this.origin.y)) * this.edge.direction.y;
-
-
 
         this.direction.x = this.destination.x - this.origin.x; 
         this.direction.y = this.destination.y - this.origin.y;
@@ -130,13 +118,16 @@ Ant.prototype = {
         var edgeChanged;
         var cityReached = false;
 
-        // on edge
-        if (this.prog < this.edge.distance){
+        this.direction.x = this.destination.x - this.x; 
+        this.direction.y = this.destination.y - this.y;
+        this.direction.normalize();
 
+        // on edge
+        // if ((this.prog < this.edge.distance) || (calculateDistance(this, this.destination) > 0.001){
+        if ((calculateDistance(this, this.destination) > 0.005)){
+
+            // a delta movement will be applied if collision with obstacle detected
             var delta = this.avoidObstacle();
-            
-            // this.x += (this.velocity*Math.cos(this.edge.direction)*this.orientation + delta.x*0.002 /*+ deltaB.x*0.002*/);
-            // this.y += (this.velocity*Math.sin(this.edge.direction)*this.orientation + delta.y*0.002 /*+ deltaB.y*0.002*/);
 
             this.x += this.velocity * this.direction.x + delta.x * 0.005;
             this.y += this.velocity * this.direction.y + delta.y * 0.005;
@@ -164,39 +155,24 @@ Ant.prototype = {
     },
 
     avoidObstacle: function(){
-        // var distance = Math.sqrt(Math.pow(this.x - mouse.x, 2) + Math.pow(this.y - mouse.y, 2));
         var distance = calculateDistance(this, mouse);
-        var distanceEdge = this.edge.calculateDistance(this.x, this.y);
+        //var distanceEdge = this.edge.calculateDistance(this.x, this.y);
     
         if (distance <= mouse.r)
         {
-            if (distanceEdge > 0.001){
-                this.direction.x = this.destination.x - this.x + this.edge.orthDirection.x * 0.0; 
-                this.direction.y = this.destination.y - this.y + this.edge.orthDirection.y * 0.0;
-                this.direction.normalize();
-            }
+            // if (distanceEdge > 0.01){
+            //     this.direction.x = this.destination.x - this.x; 
+            //     this.direction.y = this.destination.y - this.y;
+            //     this.direction.normalize();
+            // }
 
             return {
-                x: (this.x - mouse.x)/distance,
-                y: (this.y - mouse.y)/distance
-                // x: (this.x - mouse.x)/distance + this.edge.line.a,
-                // y: (this.y - mouse.y)/distance + this.edge.line.b
-                // x: (this.y - mouse.y)/distance,
-                // y: - (this.x - mouse.x)/distance
+                // delta movement is composed of a repulsion delta and a circular delta 
+                x: (this.x - mouse.x)/distance + (this.y - mouse.y)/distance * 1,
+                y: (this.y - mouse.y)/distance - (this.x - mouse.x)/distance * 1
+                // x: (this.x - mouse.x)/distance + (this.y - mouse.y)/distance * 1 + 0.1 * this.direction.x,
+                // y: (this.y - mouse.y)/distance - (this.x - mouse.x)/distance * 1 + 0.1 * this.direction.y 
             };
-        //else 
-
-            // this.direction.normalize();
-            // var line = this.edge.line;
-            // var sign = 1;
-
-            // if (this.y > -(line.a * this.x + line.c)/line.b)
-            //     sign *= -1;
-
-            // return {
-            //     x: sign * line.a,
-            //     y: sign * line.b
-            // };
         }
         else
             return {x:0, y:0};
@@ -208,7 +184,6 @@ Ant.prototype = {
 
         var theta = (v.x * this.edge.direction.x + v.y * this.edge.direction.y) / norm;
         var prog = norm * Math.abs(theta);
-        //console.log(v.norm);
         // returns length of projection on edge
         return prog;
     }

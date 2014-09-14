@@ -1,30 +1,15 @@
 'use strict';
 
-//var Map = require("harmony-collections").Map;
-
 var sqrt = Math.sqrt;
 var pow = Math.pow;
 var abs = Math.abs;
 var atan = Math.atan;
 
-//var norm = require('./utilities.js').norm;
-
 var Vector = require('./vector.js');
-
-// var nbEdges = 0;
-// var nextEdges = new Map();
 
 
 function Edge(ptA, ptB) {
     var distance = sqrt( pow(ptA.x - ptB.x, 2) + pow(ptA.y - ptB.y, 2) );
-    //    direction = atan((ptB.y-ptA.y)/(ptB.x-ptA.x));
-
-    // var direction;
-    // if (ptA.x != ptB.x){
-    //     direction = Math.atan((ptB.y-ptA.y)/(ptB.x-ptA.x));
-    // } else {
-    //     direction = Math.PI/2;
-    // }
 
     // find line equation ax + by + c = 0
     var a = 1;

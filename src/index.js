@@ -15,8 +15,6 @@ var points = require('./initializePoints.js').points;
 var edges = require('./createEdges.js');
 var nbEdges = edges.length;
 
-// console.log(norm(edges[0].line.v));
-
 // // edges verification
 // for (var i = 0; i < points.length; i++) {
 //     console.log('Longueur de ' + i + ': ' + points[i].nexts.length);

@@ -9,8 +9,8 @@ var Point = require('./point.js');
 
 var random = Math.random;
 
-var nbRandomPoints = 100;
-var nbStartPoints = 30;
+var nbRandomPoints = 60;
+var nbStartPoints = 20;
 
 var nbCity = 2;
 
@@ -84,7 +84,6 @@ function svgToPoints(svgString) {
 var points = [];
 var forcedEdges;
 var citySet;
-//var textPointsId = [];
 
 if (textMesh){
 
@@ -92,7 +91,6 @@ if (textMesh){
     points = myText.points;
     forcedEdges = myText.edges;
     citySet = new Set(range(0, points.length));
-    //var scale = 0.5;
 
     var scaleX = 0.4;
     var scaleY = 0.2;
@@ -103,9 +101,6 @@ if (textMesh){
     var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
     var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
     points = points.map(function(p){
-        //textPointsId.push(p.id);
-        //var x = 0.4*(p.x-minX)/(maxX-minX)+0.25;
-        //var y = 0.4*(p.y-minY)/(maxY-minY)+0.25;
         var x = scaleX * (p.x-minX)/(maxX-minX)+0.25;
         var y = scaleY * (p.y-minY)/(maxY-minY)+0.25;
         var newPoint = new Point(x, y);
@@ -167,7 +162,6 @@ module.exports = {
     textMesh: textMesh,
     points: points,
     citySet: citySet,
-    //textPointsId: textPointsId,
     possibleStartPointsId: possibleStartPointsId,
     nbRandomPoints: nbRandomPoints,
     forcedEdges: forcedEdges
