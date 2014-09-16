@@ -1,5 +1,7 @@
 'use strict'
 
+var random = Math.random;
+
 var shell = require("game-shell")();
 
 var points = require('./initializePoints.js').points;
@@ -80,10 +82,10 @@ shell.on("render", function() {
 
     for(var i=0; i<population.length; ++i) {
         context.beginPath()
-        // var x = population[i].posX + 0.005*random();
-        // var y = population[i].posY + 0.005*random();
-        var x = population[i].posX;
-        var y = population[i].posY;
+        var x = population[i].x + 0.005*random();
+        var y = population[i].y + 0.005*random();
+        // var x = population[i].x;
+        // var y = population[i].y;
         if (population[i].state === "pheromoning"){
             context.fillStyle = "#FF0000";
         }
