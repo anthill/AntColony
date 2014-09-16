@@ -19,7 +19,7 @@ var Vector = require('./vector.js');
 function Ant(point) {
     this.x = point.x;                
     this.y = point.y;
-    this.velocity = 0.005;
+    this.velocity = 0.003;
     this.edge = undefined;
     this.state = "forage";
     this.edges = [];
