@@ -36,20 +36,20 @@ shell.on("render", function() {
     context.fillRect(0,0,w,h);
 
     // edges
-    context.strokeStyle = "#000";
-    for(var i=0; i < edges.length; ++i) {
-        context.lineWidth = 0.0001;
-        var edge = edges[i];
-        // if (edge.pheromon != 0){
-        //     context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
-        // } else {
-        //     context.lineWidth = 0.00001;
-        // }
-        context.beginPath();
-        context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
-        context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
-        context.stroke();
-    }
+    // context.strokeStyle = "#000";
+    // for(var i=0; i < edges.length; ++i) {
+    //     context.lineWidth = 0.0001;
+    //     var edge = edges[i];
+    //     // if (edge.pheromon != 0){
+    //     //     context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
+    //     // } else {
+    //     //     context.lineWidth = 0.00001;
+    //     // }
+    //     context.beginPath();
+    //     context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
+    //     context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
+    //     context.stroke();
+    // }
 
     // // vertices
     // for(var i=0; i<points.length; ++i) {
@@ -79,18 +79,16 @@ shell.on("render", function() {
         }
     }
 
-
+    // ants
     for(var i=0; i<population.length; ++i) {
         context.beginPath()
         var x = population[i].x + 0.005*random();
         var y = population[i].y + 0.005*random();
         // var x = population[i].x;
         // var y = population[i].y;
-        if (population[i].state === "pheromoning"){
-            context.fillStyle = "#FF0000";
-        }
-        else {context.fillStyle = "#610B0B"}
-        context.arc(x, y, 0.003, 0, 2*Math.PI)
+        context.fillStyle = "#1C1C1C"
+        // context.arc(x, y, 0.002, 0, 2*Math.PI)
+        context.fillRect(x, y, 0.0012, 0.0012);
         context.closePath()
         context.fill()
     }
