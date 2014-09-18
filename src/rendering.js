@@ -1,15 +1,12 @@
 'use strict'
 
-var gameShell = require("game-shell");
-
 var random = Math.random;
 
 module.exports = function(container){
     console.log('rendering', container);
     
-    var shell = gameShell({
-        element: container
-    });
+    if(!container)
+        throw new TypeError('Missing container');
 
     var points = require('./initializePoints.js').points;
     var citySet = require('./initializePoints.js').citySet;
@@ -18,33 +15,19 @@ module.exports = function(container){
 
     var population = require('./initializeAnts');
     var nbAnts = population.length;
-
-    var canvas, context;
-
-    shell.on("init", function() {
-        console.log('init', shell.element); 
         
-        canvas = document.createElement("canvas");
-        canvas.width = shell.width;
-        canvas.height = shell.height;
-        context = canvas.getContext("2d");
-        shell.element.appendChild(canvas);
+    var canvas = document.createElement("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    container.appendChild(canvas);
+    
+    var context = canvas.getContext("2d");
+    
 
-        shell.element.addEventListener('click', function(e){
-            console.log('click', e, shell.paused);
-            shell.paused = !shell.paused;
-        });
-    })
-
-    shell.on("resize", function(w, h) {
-        canvas.width = w;
-        canvas.height = h;
-    })
-
-    shell.on("tick", function() {
+    function tick() {
         var w = canvas.width;
         var h = canvas.height;
-        var mouse = [shell.mouseX/w, shell.mouseY/h];
+        var mouse = [lastMouseMoveEvent.clientX/w, lastMouseMoveEvent.clientY/h];
         context.setTransform(w, 0, 0, h, 0, 0);
         context.fillStyle = "#fff";
         context.fillRect(0,0,w,h);
@@ -112,12 +95,43 @@ module.exports = function(container){
         context.arc(mouse[0], mouse[1], 0.01, 0, 2*Math.PI);
         context.closePath();
         context.fill();
-
+    };
+    
+    var lastMouseMoveEvent = {
+        clientX: 0,
+        clientY: 0
+    };
+    
+    container.addEventListener('mousemove', function(e){
+        lastMouseMoveEvent = e;
     });
     
+    var paused = false;
+    
+    function togglePlayPause(){
+        paused = !paused;
+        if(!paused)
+            animate();
+    }
+    
+    container.addEventListener('click', togglePlayPause);
+    
+    function animate(){
+        tick();
+        
+        if(!paused)
+            requestAnimationFrame(animate);
+    };
+    animate();
+    
     return {
-        canvas: canvas,
-        context: context,
-        shell: shell
+        togglePlayPause: togglePlayPause,
+        // should be a getter/setter, but IE8
+        getAntCount: function(){
+            throw 'TODO';
+        },
+        setAntCount: function(){
+            throw 'TODO';
+        }
     }
 }

@@ -1,3 +1,3 @@
 'use strict';
 
-require('../index.js')();
+require('../index.js')(document.body);

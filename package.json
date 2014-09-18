@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "delaunay-triangulate": "^1.1.6",
-    "game-shell": "https://github.com/anthill/game-shell/archive/with-shortcuts.tar.gz",
     "parse-svg-path": "^0.1.1"
   }
 }
