@@ -3,7 +3,6 @@
 var random = Math.random;
 
 module.exports = function(container){
-    console.log('rendering', container);
     
     if(!container)
         throw new TypeError('Missing container');
