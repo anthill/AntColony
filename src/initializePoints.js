@@ -93,17 +93,19 @@ if (textMesh){
     forcedEdges = myText.edges;
     citySet = new Set(range(0, points.length));
 
-    var scaleX = 0.4;
+    var scaleX = 0.5;
     var scaleY = 0.2;
+    var deltaX = 0.25;
+    var deltaY = 0.3;
 
-    // scale points to [0,1] + scale
+    // scale points to [0,1] + delta
     var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));
     var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
     var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
     var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
     points = points.map(function(p){
-        var x = scaleX * (p.x-minX)/(maxX-minX)+0.25;
-        var y = scaleY * (p.y-minY)/(maxY-minY)+0.25;
+        var x = scaleX * (p.x-minX)/(maxX-minX) + deltaX;
+        var y = scaleY * (p.y-minY)/(maxY-minY) + deltaY;
         var newPoint = new Point(x, y);
         newPoint.id = p.id;
 

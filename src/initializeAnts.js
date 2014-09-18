@@ -1,16 +1,22 @@
 'use strict'
 
-var Ant = require('./ant.js');
+var antFunction = require('./ant.js');
 
 var nbAnts = 3000;
 
-var population = new Array(nbAnts);
-var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
+module.exports = function (container) {
 
-for (var i = 0; i < nbAnts; i++) {
-    var newAnt = new Ant(Ant.generateRandStartPoint());
-    newAnt.setDirection();
-    population[i] = newAnt;
+	var Ant = antFunction(container);
+
+	var population = new Array(nbAnts);
+	var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
+
+	for (var i = 0; i < nbAnts; i++) {
+	    var newAnt = new Ant(Ant.generateRandStartPoint());
+	    newAnt.setDirection();
+	    population[i] = newAnt;
+	}
+
+	return population;
+
 }
-
-module.exports = population;

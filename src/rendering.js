@@ -13,12 +13,13 @@ module.exports = function(container){
 
     var edges = require('./createEdges.js');
 
-    var population = require('./initializeAnts');
+    var population = require('./initializeAnts')(container);
     var nbAnts = population.length;
         
     var canvas = document.createElement("canvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    var rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
     container.appendChild(canvas);
     
     var context = canvas.getContext("2d");
@@ -83,18 +84,12 @@ module.exports = function(container){
             var y = population[i].y + 0.005*random();
             // var x = population[i].x;
             // var y = population[i].y;
-            context.fillStyle = "#1C1C1C"
-            // context.arc(x, y, 0.002, 0, 2*Math.PI)
+            context.fillStyle = "black"
             context.fillRect(x, y, 0.0012, 0.0012);
             context.closePath();
             context.fill();
         }
 
-        context.beginPath();
-        context.fillStyle = "#AAAAAA";
-        context.arc(mouse[0], mouse[1], 0.01, 0, 2*Math.PI);
-        context.closePath();
-        context.fill();
     };
     
     var lastMouseMoveEvent = {
