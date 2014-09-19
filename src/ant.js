@@ -76,7 +76,7 @@ module.exports = function(container){
                         this.edges.forEach(function(e){
                             var a = e.pt1, b = e.pt2, weight = 1;  
                             // increased dropped pheromons for textEdges
-                            if (citySet.has(a.id) && citySet.has(b.id) && (Math.abs(a.id - b.id) == 1))
+                            if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
                                 weight *= 10;
                             }
@@ -154,7 +154,7 @@ module.exports = function(container){
 
                 this.setDirection();
 
-                cityReached = citySet.has(this.origin.id);
+                cityReached = (citySet.indexOf(this.origin.id) != -1);
                 edgeChanged = true;
             }
             return {cityReached: cityReached, edgeChanged: edgeChanged};

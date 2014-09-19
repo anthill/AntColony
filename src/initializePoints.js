@@ -32,7 +32,9 @@ function svgToPoints(svgString) {
     var points = [];
     //var edges = [];
 
-    var edges = new Map(); // pointId -> pointId on border
+    // var edges = new Map(); // pointId -> pointId on border
+    var edges = Object.create(null);
+
     var beginingPath;
 
     var X = 0;
@@ -66,13 +68,15 @@ function svgToPoints(svgString) {
                 //     prevPoint = nbPoints;
                 // }
                 if (prevPoint != undefined) {
-                    edges.set(prevPoint, nbPoints);
+                    // edges.set(prevPoint, nbPoints);
+                    edges[prevPoint] = nbPoints;
                 }
                 prevPoint = nbPoints;
                 nbPoints++;
                 break;
             case "z":
-                edges.set(prevPoint, beginingPath);
+                // edges.set(prevPoint, beginingPath);
+                edges[prevPoint] = nbPoints;
                 beginingPath = undefined;
                 prevPoint = undefined;
                 break;    
@@ -91,7 +95,8 @@ if (textMesh){
     var myText = svgToPoints(svgString);
     points = myText.points;
     forcedEdges = myText.edges;
-    citySet = new Set(range(0, points.length));
+    // citySet = new Set(range(0, points.length));
+    citySet = range(0, points.length);
 
     var scaleX = 0.5;
     var scaleY = 0.2;
@@ -147,7 +152,9 @@ if (textMesh){
         nbPoints++;
     }
 
-    citySet = new Set(range(0, nbCity));
+    // citySet = new Set(range(0, nbCity));
+    citySet = range(0, nbCity);
+    console.log(citySet);
 }
 
 
