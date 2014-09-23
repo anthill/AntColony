@@ -24,7 +24,7 @@ var permutations = [[0,1], [0,2], [1,2]];
 // force the edges of the text to be edges of the graph
 if (textMesh) {
     range(0, points.length - nbRandomPoints).forEach(function(id){
-        var directLink = forcedEdges.get(id);
+        var directLink = forcedEdges[id];
         var textEdge = Edge.create(points[id], points[directLink]);
         edges.push(textEdge);
         points[id].nexts.push(textEdge);
@@ -85,9 +85,10 @@ cells.forEach(function(cell){
 
         // add the textEdges to nextEdges map
         //if (textMesh && textPointsId.indexOf(pt.id) != -1 && pt.id < (textPointsId.length - 1)) 
-        if (textMesh && citySet.has(pt))
+        // if (textMesh && citySet.has(pt))
+        if (textMesh && (citySet.indexOf(pt.id) != -1))
         {
-            //console.log('verif');
+            // console.log('verif');
             var textEdge = Edge.create(pt, points[pt.id + 1]);
             //var temp2 = [];
             edges.push(textEdge);
