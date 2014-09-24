@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "delaunay-triangulate": "^1.1.6",
-    "parse-svg-path": "^0.1.1"
+    "parse-svg-path": "^0.1.1",
+    "raf": "^2.0.3"
   }
 }
