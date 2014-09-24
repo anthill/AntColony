@@ -1,6 +1,7 @@
 'use strict'
 
 var random = Math.random;
+var RAF = require('raf');
 
 module.exports = function(container){
     
@@ -114,7 +115,7 @@ module.exports = function(container){
         tick();
         
         if(!paused)
-            requestAnimationFrame(animate);
+            RAF(animate);
     };
     animate();
     
