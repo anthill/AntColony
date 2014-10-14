@@ -86,7 +86,7 @@ cells.forEach(function(cell){
         // add the textEdges to nextEdges map
         //if (textMesh && textPointsId.indexOf(pt.id) != -1 && pt.id < (textPointsId.length - 1)) 
         // if (textMesh && citySet.has(pt))
-        if (textMesh && (citySet.indexOf(pt.id) != -1))
+        if (textMesh && (citySet.indexOf(pt) != -1))
         {
             // console.log('verif');
             var textEdge = Edge.create(pt, points[pt.id + 1]);
