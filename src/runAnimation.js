@@ -1,3 +1,3 @@
 'use strict';
 
-require('../index.js')(document.body);
+require('../index.js')(document.body.querySelector('.colony'));

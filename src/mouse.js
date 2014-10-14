@@ -9,8 +9,9 @@ module.exports = function (container){
 
 	container.addEventListener( 'mousemove', function(e){
 	    var rect = container.getBoundingClientRect();
-	    mouse.x = e.clientX / rect.width;
-	    mouse.y = e.clientY / rect.height;
+
+	    mouse.x = (e.clientX - rect.left ) / rect.width;
+	    mouse.y = (e.clientY - rect.top )/ rect.height;
 	});
 
 	return mouse;

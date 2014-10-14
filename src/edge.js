@@ -74,11 +74,5 @@ Edge.prototype = {
         return abs(a * x + b * y + c) / Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
     },
 
-    /*calculateDistance: function(point) {
-        var a = this.line.a,
-            b = this.line.b,
-            c = this.line.c;
-        return abs(a * point.x + b * point.y + c) / Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
-    }*/
 }
 module.exports = Edge;
