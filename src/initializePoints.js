@@ -30,9 +30,6 @@ var svgString = "m 0,0 " + Achar +"m 126,-31 " + Nchar + "m 376,24 "+ Tchar +"m 
  
 function svgToPoints(svgString) {
     var points = [];
-    //var edges = [];
-
-    // var edges = new Map(); // pointId -> pointId on border
     var edges = Object.create(null);
 
     var beginingPath;
@@ -62,20 +59,14 @@ function svgToPoints(svgString) {
                 X += command[5];
                 Y += command[6];
                 points.push({id:nbPoints, x:X, y:Y});
-                // nbPoints++;
-                // if (prevPoint) {
-                //     edges.push([prevPoint, nbPoints]);
-                //     prevPoint = nbPoints;
-                // }
+
                 if (prevPoint != undefined) {
-                    // edges.set(prevPoint, nbPoints);
                     edges[prevPoint] = nbPoints;
                 }
                 prevPoint = nbPoints;
                 nbPoints++;
                 break;
             case "z":
-                // edges.set(prevPoint, beginingPath);
                 edges[prevPoint] = nbPoints;
                 beginingPath = undefined;
                 prevPoint = undefined;
@@ -95,7 +86,6 @@ if (textMesh){
     var myText = svgToPoints(svgString);
     points = myText.points;
     forcedEdges = myText.edges;
-    // citySet = new Set(range(0, points.length));
     citySet = range(0, points.length);
 
     var scaleX = 0.5;
@@ -120,9 +110,6 @@ if (textMesh){
     // only add random points
     var nbPoints = points.length;
     for(var i=0; i<nbRandomPoints; ++i) {
-
-        //var x = random() * w + xInit;
-        //var y = random() * h + yInit;
 
         var x = random();
         var y = random();
@@ -152,7 +139,6 @@ if (textMesh){
         nbPoints++;
     }
 
-    // citySet = new Set(range(0, nbCity));
     citySet = range(0, nbCity);
     console.log(citySet);
 }

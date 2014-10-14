@@ -129,7 +129,6 @@ module.exports = function(container){
             this.direction.normalize();
 
             // on edge
-            // if ((this.prog < this.edge.distance) || (calculateDistance(this, this.destination) > 0.001){
             if ((calculateDistance(this, this.destination) > 0.005)){
 
                 // a delta movement will be applied if collision with obstacle detected
@@ -139,8 +138,6 @@ module.exports = function(container){
                 this.y += this.velocity * this.direction.y + delta.y * 0.005;
 
                 this.prog = this.calculateProgression();
-                // this.prog = calculateDistance(this, this.origin);
-                //console.log(this.prog / this.edge.distance);
                 
                 edgeChanged = false;
 
@@ -163,20 +160,12 @@ module.exports = function(container){
         avoidObstacle: function(){
             var distance = calculateDistance(this, mouse);
         
-            if (distance <= REPULSION)
-            {
-                // if (distanceEdge > 0.01){
-                //     this.direction.x = this.destination.x - this.x; 
-                //     this.direction.y = this.destination.y - this.y;
-                //     this.direction.normalize();
-                // }
+            if (distance <= REPULSION) {
 
                 return {
                     // delta movement is composed of a repulsion delta and a circular delta 
                     x: (this.x - mouse.x)/distance + (this.y - mouse.y)/distance * 1,
                     y: (this.y - mouse.y)/distance - (this.x - mouse.x)/distance * 1
-                    // x: (this.x - mouse.x)/distance + (this.y - mouse.y)/distance * 1 + 0.1 * this.direction.x,
-                    // y: (this.y - mouse.y)/distance - (this.x - mouse.x)/distance * 1 + 0.1 * this.direction.y 
                 };
             }
             else
