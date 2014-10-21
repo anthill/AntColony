@@ -84,7 +84,7 @@ module.exports = function(container){
             // var x = population[i].x;
             // var y = population[i].y;
             context.fillStyle = "black"
-            context.fillRect(x, y, 0.0012, 0.0012);
+            context.fillRect(x, y, 0.002, 0.002);
             context.closePath();
             context.fill();
         }
