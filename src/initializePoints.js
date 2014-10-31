@@ -8,8 +8,8 @@ var Point = require('./point.js');
 
 var random = Math.random;
 
-var nbRandomPoints = 300;
-var nbStartPoints = 20;
+var nbRandomPoints = 500;
+var nbStartPoints = 40;
 
 var nbCity = 2;
 

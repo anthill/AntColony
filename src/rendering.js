@@ -2,6 +2,9 @@
 
 var random = Math.random;
 
+var RANDOMMVT = 0.003;
+var ANTSIZE = 0.004;
+
 module.exports = function(container){
     
     if(!container)
@@ -79,12 +82,12 @@ module.exports = function(container){
         // ants
         for(var i=0; i<population.length; ++i) {
             context.beginPath()
-            var x = population[i].x + 0.005*random();
-            var y = population[i].y + 0.005*random();
+            var x = population[i].x + RANDOMMVT*random();
+            var y = population[i].y + RANDOMMVT*random();
             // var x = population[i].x;
             // var y = population[i].y;
             context.fillStyle = "black"
-            context.fillRect(x, y, 0.002, 0.002);
+            context.fillRect(x, y, ANTSIZE, ANTSIZE);
             context.closePath();
             context.fill();
         }

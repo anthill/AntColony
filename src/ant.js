@@ -15,7 +15,8 @@ var Vector = require('./vector.js');
 var random = Math.random;
 var floor = Math.floor;
 var REPULSION = 0.05;
-
+var REPULSIONSPEED = 0.003;
+var ANTVELOCITY = 0.001;
 
 module.exports = function(container){
 
@@ -25,7 +26,7 @@ module.exports = function(container){
     function Ant(point) {
         this.x = point.x;                
         this.y = point.y;
-        this.velocity = 0.003;
+        this.velocity = ANTVELOCITY;
         this.edge = undefined;
         this.state = "forage";
         this.edges = [];
@@ -129,13 +130,13 @@ module.exports = function(container){
             this.direction.normalize();
 
             // on edge
-            if ((calculateDistance(this, this.destination) > 0.005)){
+            if ((calculateDistance(this, this.destination) > REPULSIONSPEED)){
 
                 // a delta movement will be applied if collision with obstacle detected
                 var delta = this.avoidObstacle();
 
-                this.x += this.velocity * this.direction.x + delta.x * 0.005;
-                this.y += this.velocity * this.direction.y + delta.y * 0.005;
+                this.x += this.velocity * this.direction.x + delta.x * REPULSIONSPEED;
+                this.y += this.velocity * this.direction.y + delta.y * REPULSIONSPEED;
 
                 this.prog = this.calculateProgression();
                 
