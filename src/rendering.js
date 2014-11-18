@@ -3,7 +3,7 @@
 var random = Math.random;
 
 var RANDOMMVT = 0.003;
-var ANTSIZE = 0.004;
+var ANTSIZE = 0.002;
 
 module.exports = function(container){
     

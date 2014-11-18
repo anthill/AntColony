@@ -15,7 +15,7 @@ var Vector = require('./vector.js');
 var random = Math.random;
 var floor = Math.floor;
 var REPULSION = 0.05;
-var REPULSIONSPEED = 0.003;
+var REPULSIONSPEED = 0.002;
 var ANTVELOCITY = 0.001;
 
 module.exports = function(container){
