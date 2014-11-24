@@ -22,6 +22,7 @@ module.exports = function(container){
     var rect = container.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
+    canvas.style.backgroundColor = "rgba(250, 250, 250, 0)"; 
     container.appendChild(canvas);
     
     var context = canvas.getContext("2d");
@@ -32,7 +33,7 @@ module.exports = function(container){
         var h = canvas.height;
         var mouse = [lastMouseMoveEvent.clientX/w, lastMouseMoveEvent.clientY/h];
         context.setTransform(w, 0, 0, h, 0, 0);
-        context.fillStyle = "#fff";
+        context.fillStyle = "rgba(250, 250, 250, 0.4)";
         context.fillRect(0,0,w,h);
 
         // edges
