@@ -14,11 +14,18 @@ var Vector = require('./vector.js');
 
 var random = Math.random;
 var floor = Math.floor;
-var REPULSION = 0.05;
-var REPULSIONSPEED = 0.002;
-var ANTVELOCITY = 0.001;
+// var REPULSION = 0.05;
+// var REPULSIONSPEED = 0.002;
+// var ANTVELOCITY = 0.001;
 
-module.exports = function(container){
+module.exports = function(container, options){
+
+    
+    // Define those parameters as attributes of Ant object ?
+    var REPULSION = options.repSize;
+    var REPULSIONSPEED = options.repSpeed;
+    var ANTVELOCITY = options.speed;
+    var WEIGHT = options.weight;
 
     var mouse = liveMousePosition(container);
 
@@ -79,7 +86,7 @@ module.exports = function(container){
                             // increased dropped pheromons for textEdges
                             if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
-                                weight *= 10;
+                                weight *= WEIGHT;
                             }
                             e.pheromon += (deltaPheromone * weight);
                         });

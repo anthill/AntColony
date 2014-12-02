@@ -5,7 +5,7 @@ var random = Math.random;
 var RANDOMMVT = 0.003;
 var ANTSIZE = 0.002;
 
-module.exports = function(container){
+module.exports = function(container, options){
     
     if(!container)
         throw new TypeError('Missing container');
@@ -15,7 +15,7 @@ module.exports = function(container){
 
     var edges = require('./createEdges.js');
 
-    var population = require('./initializeAnts')(container);
+    var population = require('./initializeAnts')(container, options);
     var nbAnts = population.length;
         
     var canvas = document.createElement("canvas");

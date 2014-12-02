@@ -2,13 +2,13 @@
 
 var antFunction = require('./ant.js');
 
-var NBANTS = 4000;
+// var NBANTS = 4000;
 
-module.exports = function (container) {
+module.exports = function (container, options) {
 
-	var Ant = antFunction(container);
+	var Ant = antFunction(container, options);
 
-	var population = new Array(NBANTS);
+	var population = new Array(options.nbAnts);
 	var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
 	for (var i = 0; i < NBANTS; i++) {
