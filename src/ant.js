@@ -24,7 +24,7 @@ module.exports = function(container, options){
     // Define those parameters as attributes of Ant object ?
     var REPULSION = options.repSize;
     var REPULSIONSPEED = options.repSpeed;
-    var ANTVELOCITY = options.speed;
+    var ANTVELOCITY = options.velocity;
     var WEIGHT = options.weight;
 
     var mouse = liveMousePosition(container);
@@ -34,6 +34,9 @@ module.exports = function(container, options){
         this.x = point.x;                
         this.y = point.y;
         this.velocity = ANTVELOCITY;
+        this.weight = WEIGHT;
+        this.repSize = REPULSION;
+        this.repSpeed = REPULSIONSPEED;
         this.edge = undefined;
         this.state = "forage";
         this.edges = [];
@@ -86,7 +89,7 @@ module.exports = function(container, options){
                             // increased dropped pheromons for textEdges
                             if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
-                                weight *= WEIGHT;
+                                weight *= this.weight;
                             }
                             e.pheromon += (deltaPheromone * weight);
                         });
@@ -137,13 +140,13 @@ module.exports = function(container, options){
             this.direction.normalize();
 
             // on edge
-            if ((calculateDistance(this, this.destination) > REPULSIONSPEED)){
+            if ((calculateDistance(this, this.destination) > this.repSpeed)){
 
                 // a delta movement will be applied if collision with obstacle detected
                 var delta = this.avoidObstacle();
 
-                this.x += this.velocity * this.direction.x + delta.x * REPULSIONSPEED;
-                this.y += this.velocity * this.direction.y + delta.y * REPULSIONSPEED;
+                this.x += this.velocity * this.direction.x + delta.x * this.repSpeed;
+                this.y += this.velocity * this.direction.y + delta.y * this.repSpeed;
 
                 this.prog = this.calculateProgression();
                 
@@ -168,7 +171,7 @@ module.exports = function(container, options){
         avoidObstacle: function(){
             var distance = calculateDistance(this, mouse);
         
-            if (distance <= REPULSION) {
+            if (distance <= this.repSize) {
 
                 return {
                     // delta movement is composed of a repulsion delta and a circular delta 

@@ -17,15 +17,22 @@ module.exports = function(container, options){
 
     var population = require('./initializeAnts')(container, options);
     var nbAnts = population.length;
-        
-    var canvas = document.createElement("canvas");
-    var rect = container.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    canvas.style.backgroundColor = "rgba(250, 250, 250, 0)"; 
-    container.appendChild(canvas);
+
+    var canvasList = document.getElementsByTagName("canvas");
+    
+    if (canvasList.length === 0){
+        var canvas = document.createElement("canvas");
+        var rect = container.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        canvas.style.backgroundColor = "rgba(250, 250, 250, 0)"; 
+        container.appendChild(canvas);
+    }
+    else
+        var canvas = canvasList[0];
     
     var context = canvas.getContext("2d");
+    context.clearRect ( 0 , 0 , canvas.width, canvas.height );
     
 
     function tick() {
