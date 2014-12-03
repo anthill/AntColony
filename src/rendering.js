@@ -1,21 +1,23 @@
 'use strict'
 
+// var points = require('./initializePoints.js').points;
+// var citySet = require('./initializePoints.js').citySet;
+// var start = require('./../start.js');
+// var edges = require('./createEdges.js');
+
 var random = Math.random;
 
 var RANDOMMVT = 0.003;
 var ANTSIZE = 0.002;
 
-module.exports = function(container, options){
+module.exports = function(container, initVar){
     
     if(!container)
         throw new TypeError('Missing container');
 
-    var points = require('./initializePoints.js').points;
-    var citySet = require('./initializePoints.js').citySet;
-
-    var edges = require('./createEdges.js');
-
-    var population = require('./initializeAnts')(container, options);
+    var edges = initVar.edges;
+    var population = initVar.population;
+    var pointsInfos = initVar.pointsInfos;
     var nbAnts = population.length;
 
     var canvasList = document.getElementsByTagName("canvas");
@@ -28,8 +30,10 @@ module.exports = function(container, options){
         canvas.style.backgroundColor = "rgba(250, 250, 250, 0)"; 
         container.appendChild(canvas);
     }
-    else
+    else{
         var canvas = canvasList[0];
+        console.log('CANVAS');
+    }
     
     var context = canvas.getContext("2d");
     context.clearRect ( 0 , 0 , canvas.width, canvas.height );
@@ -76,29 +80,38 @@ module.exports = function(container, options){
         // }
 
         // move ants
-        for (i = 0; i < nbAnts; i++) {
-            population[i].transit();
-        }
+        population.forEach(function(ant){
+            ant.transit();
+        });
+
+        // for (i = 0; i < nbAnts; i++) {
+        //     population[i].transit();
+        // }
 
         // pheromon evaporation
-        for (i = 0; i < edges.length; i++) {
-            if(edges[i].pheromon > 0){
-                edges[i].pheromon -= 0.0001;
+        edges.forEach(function(edge){
+            if(edge.pheromon > 0){
+                edge.pheromon -= 0.0001;
             }
-        }
+        });
+
+        // for (i = 0; i < edges.length; i++) {
+            
 
         // ants
-        for(var i=0; i<population.length; ++i) {
+        population.forEach(function(ant){
             context.beginPath()
-            var x = population[i].x + RANDOMMVT*random();
-            var y = population[i].y + RANDOMMVT*random();
-            // var x = population[i].x;
-            // var y = population[i].y;
+            var x = ant.x + RANDOMMVT*random();
+            var y = ant.y + RANDOMMVT*random();
+
             context.fillStyle = "black"
             context.fillRect(x, y, ANTSIZE, ANTSIZE);
             context.closePath();
             context.fill();
-        }
+        })
+        // for(var i=0; i<population.length; ++i) {
+            
+        // }
 
     };
     
@@ -119,24 +132,41 @@ module.exports = function(container, options){
             animate();
     }
     
-    container.addEventListener('click', togglePlayPause);
-    
+    // container.addEventListener('click', togglePlayPause);
+
     function animate(){
         tick();
         
         if(!paused)
             requestAnimationFrame(animate);
-    };
+    }
     animate();
+
+
+    function setAntCount(nb){
+        population = population.slice(0, nb);
+        nbAnts = population.length;
+        console.log('Nb Ants :', population.length);
+    }
+
+    function modifyAnts(opts){
+        setAntCount(opts.nbAnts);
+
+        population.forEach(function(ant){
+            ant.velocity = opts.velocity;
+            ant.weight = opts.weight;
+            ant.repSize = opts.repSize;
+            ant.repSpeed = opts.repSpeed;
+        });
+    }
     
     return {
         togglePlayPause: togglePlayPause,
         // should be a getter/setter, but IE8
         getAntCount: function(){
-            throw 'TODO';
+            return population.length;
         },
-        setAntCount: function(){
-            throw 'TODO';
-        }
+        setAntCount: setAntCount,
+        modifyAnts: modifyAnts
     }
 }

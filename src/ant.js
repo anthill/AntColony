@@ -3,10 +3,10 @@
 var sign = require('./utilities.js').sign;
 var calculateDistance = require('./utilities.js').distance;
 
-var points = require('./initializePoints.js').points;
-var citySet = require('./initializePoints.js').citySet;
-var textPointsId = require('./initializePoints.js').textPointsId;
-var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
+// var points = require('./initializePoints.js').points;
+// var citySet = require('./initializePoints.js').citySet;
+// var textPointsId = require('./initializePoints.js').textPointsId;
+// var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
 var liveMousePosition = require('./mouse.js');
 
@@ -18,9 +18,9 @@ var floor = Math.floor;
 // var REPULSIONSPEED = 0.002;
 // var ANTVELOCITY = 0.001;
 
-module.exports = function(container, options){
+module.exports = function(container, initPoints, options){
 
-    
+    console.log('Options ant :', options);
     // Define those parameters as attributes of Ant object ?
     var REPULSION = options.repSize;
     var REPULSIONSPEED = options.repSpeed;
@@ -28,6 +28,11 @@ module.exports = function(container, options){
     var WEIGHT = options.weight;
 
     var mouse = liveMousePosition(container);
+
+    var points = initPoints.points;
+    var citySet = initPoints.citySet;
+    var textPointsId = initPoints.textPointsId;
+    var possibleStartPointsId = initPoints.possibleStartPointsId;
 
 
     function Ant(point) {
@@ -84,12 +89,13 @@ module.exports = function(container, options){
                         // compute the length of the path
                         var pathLength = this.edges.map(function(e){return e.distance}).reduce(function(a,b){return a + b});
                         var deltaPheromone = 1/pathLength;
+                        var antWeight = this.weight;
                         this.edges.forEach(function(e){
                             var a = e.pt1, b = e.pt2, weight = 1;  
                             // increased dropped pheromons for textEdges
                             if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
-                                weight *= this.weight;
+                                weight *= antWeight;
                             }
                             e.pheromon += (deltaPheromone * weight);
                         });

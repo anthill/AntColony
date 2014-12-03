@@ -1,6 +1,6 @@
 'use strict';
 
-var start = require('./index.js');
+var _antColony = require('./index.js');
 
 var container = document.querySelector('.colony');
 
@@ -15,11 +15,18 @@ var options = {
 	// obj par defaut
 };
 
+var antColony = _antColony(container, options);
+
 window.addEventListener('click', function (){
-	options.velocity = 0.005;
-	start(container, options)
+	options.nbStart = 0;
+	options.nbRand = 0;
+
+	// options.velocity = 0.003;
+	// options.nbAnts = 1000;
+	// options.weight = 10000000;
+	options.repSpeed = 0.01;
+	options.repSize = 0.1;
+
+	antColony.changeOptions(options);
 });
-
-
-start(container, options);
 
