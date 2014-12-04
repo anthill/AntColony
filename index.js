@@ -33,9 +33,9 @@ module.exports = function init(containerElement, options){
 			}
 			else{
 				// remove all elements
-				pointsInfos = [];
-				edges = [];
-				population = [];
+				initVar.pointsInfos = [];
+				initVar.edges = [];
+				initVar.population = [];
 
 				// reset elements
 				_init(containerElement, opts);
