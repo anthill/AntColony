@@ -12,9 +12,9 @@ module.exports = function (container, pointsInfos, options) {
 	var possibleStartPointsId = pointsInfos.possibleStartPointsId;
 
 	for (var i = 0; i < options.nbAnts; i++) {
-	    var newAnt = new Ant(Ant.generateRandStartPoint());
-	    newAnt.setDirection();
-	    population[i] = newAnt;
+		var newAnt = new Ant(Ant.generateRandStartPoint());
+		newAnt.setDirection();
+		population[i] = newAnt;
 	}
 
 	return population;
