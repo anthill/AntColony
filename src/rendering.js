@@ -156,7 +156,7 @@ module.exports = function(container, initVar){
 				console.log('test');
 				var newAnt = new Ant(Ant.generateRandStartPoint());
 				newAnt.setDirection();
-				population.push = newAnt;
+				population.push(newAnt);
 			}
 		}
 		else{
