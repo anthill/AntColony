@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var sqrt = Math.sqrt;
 var pow = Math.pow;

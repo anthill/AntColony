@@ -3,10 +3,10 @@
 var sign = require('./utilities.js').sign;
 var calculateDistance = require('./utilities.js').distance;
 
-var points = require('./initializePoints.js').points;
-var citySet = require('./initializePoints.js').citySet;
-var textPointsId = require('./initializePoints.js').textPointsId;
-var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
+// var points = require('./initializePoints.js').points;
+// var citySet = require('./initializePoints.js').citySet;
+// var textPointsId = require('./initializePoints.js').textPointsId;
+// var possibleStartPointsId = require('./initializePoints.js').possibleStartPointsId;
 
 var liveMousePosition = require('./mouse.js');
 
@@ -14,19 +14,34 @@ var Vector = require('./vector.js');
 
 var random = Math.random;
 var floor = Math.floor;
-var REPULSION = 0.05;
-var REPULSIONSPEED = 0.002;
-var ANTVELOCITY = 0.001;
+// var REPULSION = 0.05;
+// var REPULSIONSPEED = 0.002;
+// var ANTVELOCITY = 0.001;
 
-module.exports = function(container){
+module.exports = function(container, initPoints, options){
+
+    console.log('Options ant :', options);
+    // Define those parameters as attributes of Ant object ?
+    var REPULSION = options.repSize;
+    var REPULSIONSPEED = options.repSpeed;
+    var ANTVELOCITY = options.velocity;
+    var WEIGHT = options.weight;
 
     var mouse = liveMousePosition(container);
+
+    var points = initPoints.points;
+    var citySet = initPoints.citySet;
+    var textPointsId = initPoints.textPointsId;
+    var possibleStartPointsId = initPoints.possibleStartPointsId;
 
 
     function Ant(point) {
         this.x = point.x;                
         this.y = point.y;
         this.velocity = ANTVELOCITY;
+        this.weight = WEIGHT;
+        this.repSize = REPULSION;
+        this.repSpeed = REPULSIONSPEED;
         this.edge = undefined;
         this.state = "forage";
         this.edges = [];
@@ -74,12 +89,13 @@ module.exports = function(container){
                         // compute the length of the path
                         var pathLength = this.edges.map(function(e){return e.distance}).reduce(function(a,b){return a + b});
                         var deltaPheromone = 1/pathLength;
+                        var antWeight = this.weight;
                         this.edges.forEach(function(e){
                             var a = e.pt1, b = e.pt2, weight = 1;  
                             // increased dropped pheromons for textEdges
                             if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
-                                weight *= 10;
+                                weight *= antWeight;
                             }
                             e.pheromon += (deltaPheromone * weight);
                         });
@@ -130,13 +146,13 @@ module.exports = function(container){
             this.direction.normalize();
 
             // on edge
-            if ((calculateDistance(this, this.destination) > REPULSIONSPEED)){
+            if ((calculateDistance(this, this.destination) > this.repSpeed)){
 
                 // a delta movement will be applied if collision with obstacle detected
                 var delta = this.avoidObstacle();
 
-                this.x += this.velocity * this.direction.x + delta.x * REPULSIONSPEED;
-                this.y += this.velocity * this.direction.y + delta.y * REPULSIONSPEED;
+                this.x += this.velocity * this.direction.x + delta.x * this.repSpeed;
+                this.y += this.velocity * this.direction.y + delta.y * this.repSpeed;
 
                 this.prog = this.calculateProgression();
                 
@@ -161,7 +177,7 @@ module.exports = function(container){
         avoidObstacle: function(){
             var distance = calculateDistance(this, mouse);
         
-            if (distance <= REPULSION) {
+            if (distance <= this.repSize) {
 
                 return {
                     // delta movement is composed of a repulsion delta and a circular delta 

@@ -8,8 +8,8 @@ var Point = require('./point.js');
 
 var random = Math.random;
 
-var nbRandomPoints = 500;
-var nbStartPoints = 20;
+// var nbRandomPoints = 500;
+// var nbStartPoints = 20;
 
 var nbCity = 2;
 
@@ -77,87 +77,88 @@ function svgToPoints(svgString) {
 }
 
 // initialize points
-var points = [];
-var forcedEdges;
-var citySet;
 
-if (textMesh){
+module.exports = function(nbStartPoints, nbRandomPoints){
+    var points = [];
+    var forcedEdges;
+    var citySet;
 
-    var myText = svgToPoints(svgString);
-    points = myText.points;
-    forcedEdges = myText.edges;
-    citySet = range(0, points.length);
+    if (textMesh){
 
-    var scaleX = 0.5;
-    var scaleY = 0.2;
-    var deltaX = 0.25;
-    var deltaY = 0.3;
+        var myText = svgToPoints(svgString);
+        points = myText.points;
+        forcedEdges = myText.edges;
+        citySet = range(0, points.length);
 
-    // scale points to [0,1] + delta
-    var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));
-    var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
-    var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
-    var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
-    points = points.map(function(p){
-        var x = scaleX * (p.x-minX)/(maxX-minX) + deltaX;
-        var y = scaleY * (p.y-minY)/(maxY-minY) + deltaY;
-        var newPoint = new Point(x, y);
-        newPoint.id = p.id;
+        var scaleX = 0.5;
+        var scaleY = 0.2;
+        var deltaX = 0.25;
+        var deltaY = 0.3;
 
-        return newPoint;
-    });
+        // scale points to [0,1] + delta
+        var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));
+        var minX = Math.min.apply(Math, points.map(function(p){return p.x}));
+        var maxY = Math.max.apply(Math, points.map(function(p){return p.y}));
+        var minY = Math.min.apply(Math, points.map(function(p){return p.y}));
+        points = points.map(function(p){
+            var x = scaleX * (p.x-minX)/(maxX-minX) + deltaX;
+            var y = scaleY * (p.y-minY)/(maxY-minY) + deltaY;
+            var newPoint = new Point(x, y);
+            newPoint.id = p.id;
 
-    // only add random points
-    var nbPoints = points.length;
-    for(var i=0; i<nbRandomPoints; ++i) {
+            return newPoint;
+        });
 
-        var x = random();
-        var y = random();
+        // only add random points
+        var nbPoints = points.length;
+        for(var i=0; i<nbRandomPoints; ++i) {
 
-        var newPoint = new Point(x, y);
-        newPoint.id = nbPoints;
+            var x = random();
+            var y = random();
 
-        points.push(newPoint);
+            var newPoint = new Point(x, y);
+            newPoint.id = nbPoints;
 
-        nbPoints++;
+            points.push(newPoint);
+
+            nbPoints++;
+        }
+
+    } else {
+        //add random points
+
+        var nbPoints = 0;
+        for(var i=0; i<nbRandomPoints; ++i) {
+
+            var x = random();
+            var y = random();
+
+            var newPoint = new Point(x, y);
+            newPoint.id = nbPoints;
+
+            points.push(newPoint);
+            
+            nbPoints++;
+        }
+
+        citySet = range(0, nbCity);
+        console.log(citySet);
     }
 
-} else {
-    //add random points
 
-    var nbPoints = 0;
-    for(var i=0; i<nbRandomPoints; ++i) {
+    // initialize start points
+    var possibleStartPointsId = [];
 
-        var x = random();
-        var y = random();
-
-        var newPoint = new Point(x, y);
-        newPoint.id = nbPoints;
-
-        points.push(newPoint);
-        
-        nbPoints++;
+    for (var i = 0; i < nbStartPoints; i++){
+        possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
     }
 
-    citySet = range(0, nbCity);
-    console.log(citySet);
-}
-
-
-// initialize start points
-var possibleStartPointsId = [];
-
-for (var i = 0; i < nbStartPoints; i++){
-    possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
-}
-
-
-
-module.exports = {
-    textMesh: textMesh,
-    points: points,
-    citySet: citySet,
-    possibleStartPointsId: possibleStartPointsId,
-    nbRandomPoints: nbRandomPoints,
-    forcedEdges: forcedEdges
+    return {
+        textMesh: textMesh,
+        points: points,
+        citySet: citySet,
+        possibleStartPointsId: possibleStartPointsId,
+        nbRandomPoints: nbRandomPoints,
+        forcedEdges: forcedEdges
+    };
 }
