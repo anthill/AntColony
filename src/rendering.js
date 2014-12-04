@@ -153,6 +153,7 @@ module.exports = function(container, initVar){
 			var Ant = antFunction(container, pointsInfos, opts);
 
 			for (var i = 0; i < opts.nbAnts - previousCount; i++) {
+				console.log('test');
 				var newAnt = new Ant(Ant.generateRandStartPoint());
 				newAnt.setDirection();
 				population.push = newAnt;
@@ -163,7 +164,7 @@ module.exports = function(container, initVar){
 			nbAnts = population.length;
 			console.log('Nb Ants :', population.length);
 		}
-		
+		console.log('Nouveau compte :', population.length);
 	}
 
 	function modifyAnts(opts){
