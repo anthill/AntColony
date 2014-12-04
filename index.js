@@ -27,18 +27,19 @@ module.exports = function init(containerElement, options){
 	return {
 		togglePlayPause: function(){ render.togglePlayPause() },
 		changeOptions: function(opts){
-			if (opts.nbStart != 0 || opts.nbRand != undefined){
-				// remove all elements
-				pointsInfos = [];
-		        edges = [];
-		        population = [];
-
-		        // reset elements
-				_init(containerElement, opts);
-			}
-			else{
+			if (opts.nbStart === undefined && opts.nbRand === undefined){
 				// modify population
 				render.modifyAnts(opts);
+			}
+			else{
+				// remove all elements
+				pointsInfos = [];
+				edges = [];
+				population = [];
+
+				// reset elements
+				_init(containerElement, opts);
+				
 			}
 		}
 	};
