@@ -32,10 +32,8 @@ module.exports = function init(containerElement, options){
 				render.modifyAnts(opts);
 			}
 			else{
-				// remove all elements
-				initVar.pointsInfos = [];
-				initVar.edges = [];
-				initVar.population = [];
+				// reset previous animation
+				render.reset();
 
 				// reset elements
 				_init(containerElement, opts);

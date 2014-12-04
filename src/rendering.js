@@ -128,6 +128,14 @@ module.exports = function(container, initVar){
 		if(!paused)
 			animate();
 	}
+
+	function reset(){
+		population = [];
+		edges = [];
+		pointsInfos = [];
+
+		cancelAnimationFrame(animID);
+	}
 	
 	// container.addEventListener('click', togglePlayPause);
 
@@ -135,7 +143,7 @@ module.exports = function(container, initVar){
 		tick();
 		
 		if(!paused)
-			requestAnimationFrame(animate);
+			var animID = requestAnimationFrame(animate);
 	}
 	animate();
 
@@ -180,6 +188,7 @@ module.exports = function(container, initVar){
 	
 	return {
 		togglePlayPause: togglePlayPause,
+		reset: reset,
 		// should be a getter/setter, but IE8
 		getAntCount: function(){
 			return population.length;
