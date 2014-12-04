@@ -27,7 +27,7 @@ module.exports = function init(containerElement, options){
 	return {
 		togglePlayPause: function(){ render.togglePlayPause() },
 		changeOptions: function(opts){
-			if (opts.nbStart != 0 || opts.nbRand != 0){
+			if (opts.nbStart != 0 || opts.nbRand != undefined){
 				// remove all elements
 				pointsInfos = [];
 		        edges = [];

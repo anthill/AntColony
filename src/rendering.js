@@ -144,7 +144,12 @@ module.exports = function(container, initVar){
 
 		var previousCount = population.length;
 
+		console.log('nbAnts :', opts.nbAnts);
+		console.log('previousCount :', previousCount);
+
+
 		if (opts.nbAnts > previousCount){
+			console.log('pointsInfos :', pointsInfos);
 			var Ant = antFunction(container, pointsInfos, opts);
 
 			for (var i = 0; i < options.nbAnts - previousCount; i++) {
