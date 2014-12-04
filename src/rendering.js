@@ -17,6 +17,8 @@ module.exports = function(container, initVar){
 	var pointsInfos = initVar.pointsInfos;
 	var nbAnts = population.length;
 
+	var animID;
+
 	var canvasList = document.getElementsByTagName("canvas");
 	
 	if (canvasList.length === 0){
@@ -143,7 +145,7 @@ module.exports = function(container, initVar){
 		tick();
 		
 		if(!paused)
-			var animID = requestAnimationFrame(animate);
+			animID = requestAnimationFrame(animate);
 	}
 	animate();
 
