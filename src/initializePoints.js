@@ -149,13 +149,13 @@ module.exports = function(nbStartPoints, nbRandomPoints){
     // initialize start points
     var possibleStartPointsId = [];
 
-    if (nbRandomPoints === 0) {
+    if (nbRandomPoints !== 0) {
         for (var i = 0; i < nbStartPoints; i++){
             possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
         }
     } else {
         for (var i = 0; i < nbStartPoints; i++){
-            possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
+            possibleStartPointsId.push(Math.floor(nbPoints * random()));
         }
     }
     
