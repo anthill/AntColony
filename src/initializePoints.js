@@ -149,9 +149,16 @@ module.exports = function(nbStartPoints, nbRandomPoints){
     // initialize start points
     var possibleStartPointsId = [];
 
-    for (var i = 0; i < nbStartPoints; i++){
-        possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
+    if (nbRandomPoints === 0) {
+        for (var i = 0; i < nbStartPoints; i++){
+            possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
+        }
+    } else {
+        for (var i = 0; i < nbStartPoints; i++){
+            possibleStartPointsId.push(Math.floor(nbRandomPoints * random()));
+        }
     }
+    
 
     return {
         textMesh: textMesh,
