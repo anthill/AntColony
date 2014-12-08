@@ -39,6 +39,12 @@ module.exports = function init(containerElement, options){
 				_init(containerElement, opts);
 				
 			}
+		},
+		reset: function(opts){
+			render.reset();
+
+				// reset elements
+			_init(containerElement, opts);
 		}
 	};
 };
