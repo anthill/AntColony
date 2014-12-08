@@ -27,18 +27,7 @@ module.exports = function init(containerElement, options){
 	return {
 		togglePlayPause: function(){ render.togglePlayPause() },
 		changeOptions: function(opts){
-			if (opts.nbStart === undefined && opts.nbRand === undefined){
-				// modify population
-				render.modifyAnts(opts);
-			}
-			else{
-				// reset previous animation
-				render.reset();
-
-				// reset elements
-				_init(containerElement, opts);
-				
-			}
+			render.modifyAnts(opts);
 		},
 		reset: function(opts){
 			render.reset();
