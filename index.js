@@ -3,23 +3,24 @@
 var initRendering = require('./src/rendering.js');
 var initializePoints = require('./src/initializePoints.js');
 var createEdges = require('./src/createEdges.js');
-var initAnts = require('./src/initializeAnts');
+// var initAnts = require('./src/initializeAnts');
 
 module.exports = function init(containerElement, options){
 
-	var render, pointsInfos, edges, population, initVar;
+	var render, pointsInfos, edges, population, pointsMap;
 
 
 	function _init(containerElement, options){
 		pointsInfos = initializePoints(options.nbStart, options.nbRand);
 		edges = createEdges(pointsInfos.points);
-		population = initAnts(containerElement, pointsInfos, options);
-		initVar = {
+		// population = options.nbAnts;
+		// population = initAnts(containerElement, pointsInfos, options);
+		pointsMap = {
 			pointsInfos: pointsInfos,
-			edges: edges,
-			population: population
+			edges: edges
+			// population: population
 		};
-		render = initRendering(containerElement, initVar);
+		render = initRendering(containerElement, pointsMap, options);
 	}
 
 	_init(containerElement, options);

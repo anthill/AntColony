@@ -19,6 +19,25 @@
 				/*background-image: url("crowd.jpg");*/
 			}
 
+			.monitor{
+				font-family: arial;
+				font-size: 0.8em;
+				height: 20px;
+				width: 200px;
+				position: fixed;
+				right: 10px;
+				background-color: black;
+				color: white;
+			}
+
+			#dT{
+				top: 50px;
+			}
+
+			#FPS{
+				top: 10px;
+			}
+
 		</style>
 
 		<script> // Polyfill Object.assign()
@@ -53,5 +72,7 @@
 	</head>
 	<body>
 		<div class="colony"></div>
+		<div id="FPS" class="monitor">FPS: </div>
+		<div id="dT" class="monitor">dT: </div>
 	</body>
 </html>

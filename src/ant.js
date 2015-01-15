@@ -117,16 +117,20 @@ module.exports = function(container, initPoints, options){
                 possibleEdges[i] = this.origin.nexts[i];
             } 
 
+            // console.log('smells1: ', possibleEdges);
+
             possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
 
             // flip a coin and either take the smelliest path or a random one
             if (random() > 0.5){
-                var smells = possibleEdges.map(function(e){return e.pheromon});
+                var smells = possibleEdges.map(function(e){return e.pheromon;});
                 var index = smells.indexOf(Math.max.apply(Math, smells));
                 this.edge = possibleEdges[index];
             } 
-            else
+            else{
                 this.edge = possibleEdges[floor(random()*possibleEdges.length)];
+            }
+                
 
             // set the destination point, being edge.pt1 or edge.pt2
             this.destination = (this.origin == this.edge.pt1) ? this.edge.pt2 : this.edge.pt1;
@@ -138,6 +142,7 @@ module.exports = function(container, initPoints, options){
         },
 
         move: function(){
+            // console.log('move');
             var edgeChanged;
             var cityReached = false;
 
@@ -160,6 +165,7 @@ module.exports = function(container, initPoints, options){
 
             // on vertex
             } else {
+                // console.log('reached');
                 this.step = 0;
                 this.prog = 0;
                 this.origin = this.destination;

@@ -1,24 +1,43 @@
 'use strict'
 
 var antFunction = require('./ant.js');
+var antsGroup = require('./antsGroup');
 
 var random = Math.random;
 
 var RANDOMMVT = 0.003;
 var ANTSIZE = 0.002;
 
-module.exports = function(container, initVar){
-	
+module.exports = function(container, pointsMap, options){
+
 	if(!container)
 		throw new TypeError('Missing container');
 
-	var edges = initVar.edges;
-	var population = initVar.population;
-	var pointsInfos = initVar.pointsInfos;
-	var nbAnts = population.length;
+	// Ants variables
+	var edges = pointsMap.edges;
+	var objPopulationInitial = options.nbAnts;
+	var objPopulation = objPopulationInitial;
+	var pointsInfos = pointsMap.pointsInfos;
+	var population = [];
+	var nbAntsPerStep = 100;
+	
+	var Ant = antFunction(container, pointsInfos, options);
+	antsGroup = antsGroup(Ant);
 
+	// Animation variables
 	var animID;
+	var deltaTime;
+	var FPSCount;
+	var lastUpdate = performance.now();
+	var FPSMonitor = document.querySelector('#FPS');
+	var dTMonitor = document.querySelector('#dT');
+	var refreshTime = 0;
+	var maxDeltaTime = 30;
+	var FPSOverLimitCount = 0;
+	var FPSUnderLimitCount = 0;
 
+
+	// Canvas
 	var canvasList = document.getElementsByTagName("canvas");
 	
 	if (canvasList.length === 0){
@@ -33,12 +52,69 @@ module.exports = function(container, initVar){
 		var canvas = canvasList[0];
 		console.log('CANVAS');
 	}
-	
 	var context = canvas.getContext("2d");
 	context.clearRect ( 0 , 0 , canvas.width, canvas.height );
 	
 
+	function checkAntNumber(antNumber){
+		if (antNumber < objPopulation - 50){
+			FPSMonitor.style.color = "green";
+			population = antsGroup.create(population);
+		}	
+		else if (antNumber > objPopulation){
+			population = antsGroup.remove(population, antNumber - objPopulation);
+			FPSMonitor.style.color = "red";
+		}
+		else
+			FPSMonitor.style.color = "white";
+	}
+
+	function displayFPS(dT){
+		FPSCount = (1000/dT).toFixed(2);
+		var t = dT.toFixed(2);
+		FPSMonitor.innerText = 'FPS : ' + FPSCount;  
+		dTMonitor.innerText = 'nbAnts : ' + population.length;
+		// dTMonitor.innerText = 'dT : ' + t + 'ms';
+	}
+
 	function tick() {
+		var now = performance.now();
+		deltaTime = now - lastUpdate;
+		lastUpdate = now;
+		refreshTime += deltaTime/1000; // in seconds
+
+		console.log('nbAnts', population.length);
+
+		checkAntNumber(population.length);
+
+		// display FPS info every 0.3 s
+		if (refreshTime > 0.3){
+			// displayFPS(deltaTime);
+			refreshTime = 0; 
+		}
+
+		// remove ants when frame rate is too low
+		if (FPSOverLimitCount === 10) {
+			objPopulation = objPopulation * maxDeltaTime / deltaTime;
+			FPSOverLimitCount = 0;
+		}
+
+		while (FPSUnderLimitCount > 50 && objPopulation < objPopulationInitial) {
+			objPopulation += 100;
+			// FPSOverLimitCount = 0;
+		}
+
+		// check duration of over/under framerate limit periods
+		if (deltaTime > maxDeltaTime){
+			FPSOverLimitCount++;
+			FPSUnderLimitCount = 0;
+		}
+		else {
+			FPSOverLimitCount = 0;
+			FPSUnderLimitCount++;
+		}
+
+		// draw in canvas
 		var w = canvas.width;
 		var h = canvas.height;
 		var mouse = [lastMouseMoveEvent.clientX/w, lastMouseMoveEvent.clientY/h];
@@ -83,19 +159,12 @@ module.exports = function(container, initVar){
 			ant.transit();
 		});
 
-		// for (i = 0; i < nbAnts; i++) {
-		//     population[i].transit();
-		// }
-
 		// pheromon evaporation
 		edges.forEach(function(edge){
 			if(edge.pheromon > 0){
 				edge.pheromon -= 0.0001;
 			}
 		});
-
-		// for (i = 0; i < edges.length; i++) {
-			
 
 		// ants
 		population.forEach(function(ant){
@@ -108,10 +177,6 @@ module.exports = function(container, initVar){
 			context.closePath();
 			context.fill();
 		})
-		// for(var i=0; i<population.length; ++i) {
-			
-		// }
-
 	};
 	
 	var lastMouseMoveEvent = {
@@ -149,36 +214,8 @@ module.exports = function(container, initVar){
 	}
 	animate();
 
-
-	function setAntCount(opts){
-
-		var previousCount = population.length;
-
-		console.log('nbAnts :', opts.nbAnts);
-		console.log('previousCount :', previousCount);
-
-
-		if (opts.nbAnts > previousCount){
-			console.log('pointsInfos :', pointsInfos);
-			var Ant = antFunction(container, pointsInfos, opts);
-
-			for (var i = 0; i < opts.nbAnts - previousCount; i++) {
-				console.log('test');
-				var newAnt = new Ant(Ant.generateRandStartPoint());
-				newAnt.setDirection();
-				population.push(newAnt);
-			}
-		}
-		else{
-			population = population.slice(0, opts.nbAnts);
-			nbAnts = population.length;
-			console.log('Nb Ants :', population.length);
-		}
-		console.log('Nouveau compte :', population.length);
-	}
-
 	function modifyAnts(opts){
-		setAntCount(opts);
+		objPopulation = opts.nbAnts;
 
 		population.forEach(function(ant){
 			ant.velocity = opts.velocity;
@@ -195,7 +232,6 @@ module.exports = function(container, initVar){
 		getAntCount: function(){
 			return population.length;
 		},
-		setAntCount: setAntCount,
 		modifyAnts: modifyAnts
 	}
 }
