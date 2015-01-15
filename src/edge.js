@@ -32,7 +32,6 @@ function Edge(ptA, ptB) {
     
     v.normalize();
 
-
     this.id = undefined;
     this.pt1 = ptA;
     this.pt2 = ptB;
@@ -44,7 +43,9 @@ function Edge(ptA, ptB) {
         a: a,
         b: b,
         c: c,
-    }
+    };
+
+    if (this.distance === 0) console.log('ZERO !');
 }
 
 

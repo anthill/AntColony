@@ -9,7 +9,7 @@ module.exports = function (container, pointsInfos, options) {
 	var Ant = antFunction(container, pointsInfos, options);
 
 	var population = new Array(options.nbAnts);
-	var possibleStartPointsId = pointsInfos.possibleStartPointsId;
+	// var possibleStartPointsId = pointsInfos.possibleStartPointsId;
 
 	for (var i = 0; i < options.nbAnts; i++) {
 		var newAnt = new Ant(Ant.generateRandStartPoint());
