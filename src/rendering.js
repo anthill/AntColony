@@ -195,39 +195,8 @@ module.exports = function(container, pointsMap, options){
 	}
 	animate();
 
-
-	function setAntCount(opts){
-		objPopulation = opts.nbAnts;
-
-		// var previousCount = population.length;
-
-		// console.log('nbAnts :', opts.nbAnts);
-		// console.log('previousCount :', previousCount);
-
-
-		// if (opts.nbAnts > previousCount){
-		// 	console.log('pointsInfos :', pointsInfos);
-		// 	var Ant = antFunction(container, pointsInfos, opts);
-
-		// 	for (var i = 0; i < opts.nbAnts - previousCount; i++) {
-		// 		// console.log('creating new ant !');
-		// 		// var newAnt = new Ant(Ant.generateRandStartPoint());
-		// 		// newAnt.setDirection();
-		// 		// population.push(newAnt);
-		// 	}
-		// }
-		// else{
-		// 	antsGroup.remove(population);
-		// 	// console.log('slice');
-		// 	// population = population.slice(0, opts.nbAnts);
-		// 	// nbAnts = population.length;
-		// 	// console.log('Nb Ants :', population.length);
-		
-		console.log('Nouvel Objectif :', objPopulation);
-	}
-
 	function modifyAnts(opts){
-		setAntCount(opts);
+		objPopulation = opts.nbAnts;
 
 		population.forEach(function(ant){
 			ant.velocity = opts.velocity;

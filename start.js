@@ -19,7 +19,7 @@ var antColony = _antColony(container, options);
 
 window.addEventListener('click', function (){
 	// options.velocity = 0.003;
-	options.nbAnts = 20000;
+	options.nbAnts = 10000;
 	// options.weight = 10000000;
 	// options.repSpeed = 0.01;
 	// options.repSize = 0.1;
