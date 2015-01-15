@@ -26,10 +26,10 @@ module.exports = function (Ant) {
 	}
 
 	function removeGroup(population, nbDead){
-		population = population.slice(0, nbDead);
+		population = population.slice(0, population.length - nbDead);
 
 		console.log('Removed Ants Group: \
-(+ ' + nbAntsPerStep + ') => ' + population.length);
+(- ' + nbAntsPerStep + ') => ' + population.length);
 
 		return population;
 

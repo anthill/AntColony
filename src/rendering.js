@@ -15,14 +15,12 @@ module.exports = function(container, pointsMap, options){
 
 	// Ants variables
 	var edges = pointsMap.edges;
-	var objPopulation = options.nbAnts;
+	var objPopulationInitial = options.nbAnts;
+	var objPopulation = objPopulationInitial;
 	var pointsInfos = pointsMap.pointsInfos;
 	var population = [];
 	var nbAntsPerStep = 100;
-
-	console.log('pointsMap: ', pointsMap);
 	
-
 	var Ant = antFunction(container, pointsInfos, options);
 	antsGroup = antsGroup(Ant);
 
@@ -34,9 +32,12 @@ module.exports = function(container, pointsMap, options){
 	var FPSMonitor = document.querySelector('#FPS');
 	var dTMonitor = document.querySelector('#dT');
 	var refreshTime = 0;
-	var maxDeltaTime = 40;
-	var count = 0;
+	var maxDeltaTime = 30;
+	var FPSOverLimitCount = 0;
+	var FPSUnderLimitCount = 0;
 
+
+	// Canvas
 	var canvasList = document.getElementsByTagName("canvas");
 	
 	if (canvasList.length === 0){
@@ -51,10 +52,10 @@ module.exports = function(container, pointsMap, options){
 		var canvas = canvasList[0];
 		console.log('CANVAS');
 	}
-	
 	var context = canvas.getContext("2d");
 	context.clearRect ( 0 , 0 , canvas.width, canvas.height );
 	
+
 	function checkAntNumber(antNumber){
 		if (antNumber < objPopulation - 50){
 			FPSMonitor.style.color = "green";
@@ -72,7 +73,8 @@ module.exports = function(container, pointsMap, options){
 		FPSCount = (1000/dT).toFixed(2);
 		var t = dT.toFixed(2);
 		FPSMonitor.innerText = 'FPS : ' + FPSCount;  
-		dTMonitor.innerText = 'dT : ' + t + 'ms';
+		dTMonitor.innerText = 'nbAnts : ' + population.length;
+		// dTMonitor.innerText = 'dT : ' + t + 'ms';
 	}
 
 	function tick() {
@@ -85,17 +87,34 @@ module.exports = function(container, pointsMap, options){
 
 		checkAntNumber(population.length);
 
+		// display FPS info every 0.3 s
 		if (refreshTime > 0.3){
 			displayFPS(deltaTime);
 			refreshTime = 0; 
 		}
 
-		// if (count === 20) adaptAntNumber(deltaTime);
-
-		if (deltaTime > maxDeltaTime){
-			count++;
+		// remove ants when frame rate is too low
+		if (FPSOverLimitCount === 10) {
+			objPopulation = objPopulation * maxDeltaTime / deltaTime;
+			FPSOverLimitCount = 0;
 		}
 
+		while (FPSUnderLimitCount > 50 && objPopulation < objPopulationInitial) {
+			objPopulation += 100;
+			// FPSOverLimitCount = 0;
+		}
+
+		// check duration of over/under framerate limit periods
+		if (deltaTime > maxDeltaTime){
+			FPSOverLimitCount++;
+			FPSUnderLimitCount = 0;
+		}
+		else {
+			FPSOverLimitCount = 0;
+			FPSUnderLimitCount++;
+		}
+
+		// draw in canvas
 		var w = canvas.width;
 		var h = canvas.height;
 		var mouse = [lastMouseMoveEvent.clientX/w, lastMouseMoveEvent.clientY/h];
@@ -213,7 +232,6 @@ module.exports = function(container, pointsMap, options){
 		getAntCount: function(){
 			return population.length;
 		},
-		setAntCount: setAntCount,
 		modifyAnts: modifyAnts
 	}
 }
