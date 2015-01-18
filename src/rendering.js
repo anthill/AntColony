@@ -89,7 +89,7 @@ module.exports = function(container, pointsMap, options){
 
 		// display FPS info every 0.3 s
 		if (refreshTime > 0.3){
-			// displayFPS(deltaTime);
+			displayFPS(deltaTime);
 			refreshTime = 0; 
 		}
 
