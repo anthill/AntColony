@@ -19,8 +19,8 @@ module.exports = function (Ant) {
 			population.push(newAnt);
 		}
 
-		console.log('Created Ants Group: \
-(+ ' + nbAntsPerStep + ') => ' + population.length);
+// 		console.log('Created Ants Group: \
+// (+ ' + nbAntsPerStep + ') => ' + population.length);
 
 		return population;
 	}
@@ -28,8 +28,8 @@ module.exports = function (Ant) {
 	function removeGroup(population, nbDead){
 		population = population.slice(0, population.length - nbDead);
 
-		console.log('Removed Ants Group: \
-(- ' + nbAntsPerStep + ') => ' + population.length);
+// 		console.log('Removed Ants Group: \
+// (- ' + nbAntsPerStep + ') => ' + population.length);
 
 		return population;
 
