@@ -112,8 +112,6 @@ module.exports = function(nbStartPoints, nbRandomPoints){
             return newPoint;
         });
 
-        console.log(points);
-
         // only add random points
         var nbPoints = points.length;
         for(var i=0; i<nbRandomPoints; ++i) {
