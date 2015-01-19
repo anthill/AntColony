@@ -122,7 +122,7 @@ module.exports = function(container, initPoints, options){
             possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
 
             // flip a coin and either take the smelliest path or a random one
-            if (random() > 0.5){
+            if (random() < 0.8){
                 var smells = possibleEdges.map(function(e){return e.pheromon;});
                 var index = smells.indexOf(Math.max.apply(Math, smells));
                 this.edge = possibleEdges[index];

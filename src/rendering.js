@@ -32,7 +32,7 @@ module.exports = function(container, pointsMap, options){
 	var FPSMonitor = document.querySelector('#FPS');
 	var dTMonitor = document.querySelector('#dT');
 	var refreshTime = 0;
-	var maxDeltaTime = 30;
+	var maxDeltaTime = 40;
 	var FPSOverLimitCount = 0;
 	var FPSUnderLimitCount = 0;
 
@@ -83,7 +83,7 @@ module.exports = function(container, pointsMap, options){
 		lastUpdate = now;
 		refreshTime += deltaTime/1000; // in seconds
 
-		console.log('nbAnts', population.length);
+		// console.log('nbAnts', population.length);
 
 		checkAntNumber(population.length);
 
@@ -100,8 +100,7 @@ module.exports = function(container, pointsMap, options){
 		}
 
 		while (FPSUnderLimitCount > 50 && objPopulation < objPopulationInitial) {
-			objPopulation += 100;
-			// FPSOverLimitCount = 0;
+			objPopulation += 10;
 		}
 
 		// check duration of over/under framerate limit periods
@@ -122,33 +121,33 @@ module.exports = function(container, pointsMap, options){
 		context.fillStyle = "rgba(250, 250, 250, 0.4)";
 		context.fillRect(0,0,w,h);
 
-		// edges
+		// // edges
 		// context.strokeStyle = "#000";
 		// for(var i=0; i < edges.length; ++i) {
 		//     context.lineWidth = 0.0001;
 		//     var edge = edges[i];
-		//     // if (edge.pheromon != 0){
-		//     //     context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
-		//     // } else {
-		//     //     context.lineWidth = 0.00001;
-		//     // }
+		//     if (edge.pheromon != 0){
+		//         context.lineWidth = Math.min(0.00001 * edge.pheromon, 0.01);
+		//     } else {
+		//         context.lineWidth = 0.00001;
+		//     }
 		//     context.beginPath();
-		//     context.moveTo(points[edge.pt1.id].x, points[edge.pt1.id].y);
-		//     context.lineTo(points[edge.pt2.id].x, points[edge.pt2.id].y);
+		//     context.moveTo(pointsInfos.points[edge.pt1.id].x, pointsInfos.points[edge.pt1.id].y);
+		//     context.lineTo(pointsInfos.points[edge.pt2.id].x, pointsInfos.points[edge.pt2.id].y);
 		//     context.stroke();
 		// }
 
 		// // vertices
-		// for(var i=0; i<points.length; ++i) {
+		// for(var i=0; i<pointsInfos.points.length; ++i) {
 		//     context.beginPath()
-		//     var point = points[i];
-		//     if (citySet.has(point.id)) {
+		//     var point = pointsInfos.points[i];
+		//     if (pointsInfos.citySet.indexOf(point.id) != -1){
 		//         context.fillStyle = "#0101DF";
 		//         context.arc(point.x, point.y, 0.006, 0, 2*Math.PI);
 		//     }
 		//     else {
 		//         context.fillStyle = "#000";
-		//         context.arc(points[i].x, points[i].y, 0.003, 0, 2*Math.PI);
+		//         context.arc(pointsInfos.points[i].x, pointsInfos.points[i].y, 0.003, 0, 2*Math.PI);
 		//     }
 		//     context.closePath();
 		//     context.fill();
