@@ -94,9 +94,9 @@ module.exports = function(nbStartPoints, nbRandomPoints){
         citySet = range(0, points.length);
 
         var scaleX = 0.5;
-        var scaleY = 0.5;
+        var scaleY = 0.4;
         var deltaX = 0.25;
-        var deltaY = 0.2;
+        var deltaY = 0.25;
 
         // scale points to [0,1] + delta
         var maxX = Math.max.apply(Math, points.map(function(p){return p.x}));

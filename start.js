@@ -10,8 +10,8 @@ var options = {
 	weight: 10,
 	repSize: 0.05,
 	repSpeed: 0.002,
-	nbStart: 300,
-	nbRand: 300
+	nbStart: 500,
+	nbRand: 900
 	// obj par defaut
 };
 
