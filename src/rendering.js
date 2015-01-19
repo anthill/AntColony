@@ -58,22 +58,22 @@ module.exports = function(container, pointsMap, options){
 
 	function checkAntNumber(antNumber){
 		if (antNumber < objPopulation - 50){
-			// FPSMonitor.style.color = "green";
+			FPSMonitor.style.color = "green";
 			population = antsGroup.create(population);
 		}	
 		else if (antNumber > objPopulation){
 			population = antsGroup.remove(population, antNumber - objPopulation);
-			// FPSMonitor.style.color = "red";
+			FPSMonitor.style.color = "red";
 		}
-		// else
-		// 	FPSMonitor.style.color = "white";
+		else
+			FPSMonitor.style.color = "white";
 	}
 
 	function displayFPS(dT){
 		FPSCount = (1000/dT).toFixed(2);
 		var t = dT.toFixed(2);
-		// FPSMonitor.textContent = 'FPS : ' + FPSCount;  
-		// dTMonitor.textContent = 'nbAnts : ' + population.length;
+		FPSMonitor.textContent = 'FPS : ' + FPSCount;  
+		dTMonitor.textContent = 'nbAnts : ' + population.length;
 		// dTMonitor.innerText = 'dT : ' + t + 'ms';
 	}
 
