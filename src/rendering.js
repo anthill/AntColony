@@ -29,8 +29,8 @@ module.exports = function(container, pointsMap, options){
 	var deltaTime;
 	var FPSCount;
 	var lastUpdate = performance.now();
-	// var FPSMonitor = document.querySelector('#FPS');
-	// var dTMonitor = document.querySelector('#dT');
+	var FPSMonitor = document.querySelector('#FPS');
+	var dTMonitor = document.querySelector('#dT');
 	var refreshTime = 0;
 	var maxDeltaTime = 40;
 	var FPSOverLimitCount = 0;
