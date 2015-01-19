@@ -4,9 +4,10 @@
   "description": "A ant colony simulation for our website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/runAnimation.js  -o app.js -d -v",
-    "watch": "watchify src/runAnimation.js  -o app.js -d -v"
+    "test": "echo \"Error: no test specified\" && exit 1",    
+    "build-prod": "browserify src/runAnimation.js  -o app.js -d -v",
+    "watch-prod": "watchify src/runAnimation.js  -o app.js -d -v",
+    "watch": "watchify start.js -o app.js -d -v"
   },
   "author": "Alexandre Vallette",
   "license": "MIT",
