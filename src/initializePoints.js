@@ -93,8 +93,6 @@ module.exports = function(nbStartPoints, nbRandomPoints){
         forcedEdges = myText.edges;
         citySet = range(0, points.length);
 
-        console.log(points);
-
         var scaleX = 0.5;
         var scaleY = 0.5;
         var deltaX = 0.25;

@@ -72,8 +72,8 @@ module.exports = function(container, pointsMap, options){
 	function displayFPS(dT){
 		FPSCount = (1000/dT).toFixed(2);
 		var t = dT.toFixed(2);
-		FPSMonitor.innerText = 'FPS : ' + FPSCount;  
-		dTMonitor.innerText = 'nbAnts : ' + population.length;
+		FPSMonitor.textContent = 'FPS : ' + FPSCount;  
+		dTMonitor.textContent = 'nbAnts : ' + population.length;
 		// dTMonitor.innerText = 'dT : ' + t + 'ms';
 	}
 
