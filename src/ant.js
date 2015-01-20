@@ -14,6 +14,7 @@ var Vector = require('./vector.js');
 
 var random = Math.random;
 var floor = Math.floor;
+var WEIGHT = 10;
 // var REPULSION = 0.05;
 // var REPULSIONSPEED = 0.002;
 // var ANTVELOCITY = 0.001;
@@ -25,7 +26,7 @@ module.exports = function(container, initPoints, options){
     var REPULSION = options.repSize;
     var REPULSIONSPEED = options.repSpeed;
     var ANTVELOCITY = options.velocity;
-    var WEIGHT = options.weight;
+    var INTELLIGENCE = options.intelligence;
 
     var mouse = liveMousePosition(container);
 
@@ -39,7 +40,7 @@ module.exports = function(container, initPoints, options){
         this.x = point.x;                
         this.y = point.y;
         this.velocity = ANTVELOCITY;
-        this.weight = WEIGHT;
+        this.intelligence = INTELLIGENCE;
         this.repSize = REPULSION;
         this.repSpeed = REPULSIONSPEED;
         this.edge = undefined;
@@ -89,13 +90,12 @@ module.exports = function(container, initPoints, options){
                         // compute the length of the path
                         var pathLength = this.edges.map(function(e){return e.distance}).reduce(function(a,b){return a + b});
                         var deltaPheromone = 1/pathLength;
-                        var antWeight = this.weight;
                         this.edges.forEach(function(e){
                             var a = e.pt1, b = e.pt2, weight = 1;  
                             // increased dropped pheromons for textEdges
                             if ((citySet.indexOf(a.id) != -1) && citySet.indexOf(b.id) != -1 && (Math.abs(a.id - b.id) == 1))
                             {
-                                weight *= antWeight;
+                                weight *= WEIGHT;
                             }
                             e.pheromon += (deltaPheromone * weight);
                         });
@@ -122,7 +122,7 @@ module.exports = function(container, initPoints, options){
             possibleEdges.splice(possibleEdges.indexOf(this.edge),1);
 
             // flip a coin and either take the smelliest path or a random one
-            if (random() < 0.8){
+            if (random() < this.intelligence){
                 var smells = possibleEdges.map(function(e){return e.pheromon;});
                 var index = smells.indexOf(Math.max.apply(Math, smells));
                 this.edge = possibleEdges[index];

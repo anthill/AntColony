@@ -31,11 +31,18 @@ module.exports = function(container, pointsMap, options){
 	var lastUpdate = performance.now();
 	var FPSMonitor = document.querySelector('#FPS');
 	var dTMonitor = document.querySelector('#dT');
+	var warningMonitor = document.querySelector('#warning');
 	var refreshTime = 0;
 	var maxDeltaTime = 40;
 	var FPSOverLimitCount = 0;
 	var FPSUnderLimitCount = 0;
 
+	// warning message disappears after 4 s
+	warningMonitor.addEventListener("transitionend", function(){
+		window.setTimeout(function(){
+			warningMonitor.className = "invisible";
+		}, 4000);
+	})
 
 	// Canvas
 	var canvasList = document.getElementsByTagName("canvas");
@@ -64,16 +71,19 @@ module.exports = function(container, pointsMap, options){
 		else if (antNumber > objPopulation){
 			population = antsGroup.remove(population, antNumber - objPopulation);
 			FPSMonitor.style.color = "red";
+			warningMonitor.className = "visible";
 		}
-		else
+		else{
 			FPSMonitor.style.color = "white";
+			// warningMonitor.className = "invisible";
+		}
 	}
 
 	function displayFPS(dT){
 		FPSCount = (1000/dT).toFixed(2);
 		var t = dT.toFixed(2);
-		FPSMonitor.innerText = 'FPS : ' + FPSCount;  
-		dTMonitor.innerText = 'nbAnts : ' + population.length;
+		FPSMonitor.textContent = 'FPS : ' + FPSCount;  
+		dTMonitor.textContent = 'nbAnts : ' + population.length;
 		// dTMonitor.innerText = 'dT : ' + t + 'ms';
 	}
 
@@ -218,7 +228,7 @@ module.exports = function(container, pointsMap, options){
 
 		population.forEach(function(ant){
 			ant.velocity = opts.velocity;
-			ant.weight = opts.weight;
+			ant.intelligence = opts.intelligence;
 			ant.repSize = opts.repSize;
 			ant.repSpeed = opts.repSpeed;
 		});

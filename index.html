@@ -39,6 +39,27 @@
 				top: 10px;
 			}
 
+			#warning{
+				font-family: arial;
+				font-size: 0.7em;
+				color: rgba(240, 0, 0, 0.6);
+				height: 20px;
+				position: absolute;
+				width: auto;
+				right: 10px;
+				top: 97%;
+			}
+
+			.invisible{
+				transition: opacity 8s;
+				opacity: 0;
+			}
+
+			.visible{
+				transition: opacity 1s;
+				opacity: 1;
+			}
+
 		</style>
 
 		<script> // Polyfill Object.assign()
@@ -75,5 +96,6 @@
 		<div class="colony"></div>
 		<div id="FPS" class="monitor">FPS: </div>
 		<div id="dT" class="monitor">dT: </div>
+		<div id="warning" class="invisible">WARNING ! ANT NUMBER WILL ADAPT TO ASSURE FPS IS SUPERIOR TO 25</div>
 	</body>
 </html>
