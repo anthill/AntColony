@@ -228,7 +228,7 @@ module.exports = function(container, pointsMap, options){
 
 		population.forEach(function(ant){
 			ant.velocity = opts.velocity;
-			ant.weight = opts.weight;
+			ant.intelligence = opts.intelligence;
 			ant.repSize = opts.repSize;
 			ant.repSpeed = opts.repSpeed;
 		});
