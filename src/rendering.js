@@ -15,8 +15,8 @@ module.exports = function(container, pointsMap, options){
 
 	// Ants variables
 	var edges = pointsMap.edges;
-	var objPopulationInitial = options.nbAnts;
-	var objPopulation = objPopulationInitial;
+	var objPopulationMax = options.nbAnts;
+	var objPopulationAdjusted = objPopulationMax;
 	var pointsInfos = pointsMap.pointsInfos;
 	var population = [];
 	var nbAntsPerStep = 100;
@@ -64,12 +64,12 @@ module.exports = function(container, pointsMap, options){
 	
 
 	function checkAntNumber(antNumber){
-		if (antNumber < objPopulation - 50){
+		if (antNumber < objPopulationAdjusted - 50){
 			FPSMonitor.style.color = "green";
 			population = antsGroup.create(population);
 		}	
-		else if (antNumber > objPopulation){
-			population = antsGroup.remove(population, antNumber - objPopulation);
+		else if (antNumber > objPopulationAdjusted){
+			population = antsGroup.remove(population, antNumber - objPopulationAdjusted);
 			FPSMonitor.style.color = "red";
 			warningMonitor.className = "visible";
 		}
@@ -105,12 +105,12 @@ module.exports = function(container, pointsMap, options){
 
 		// remove ants when frame rate is too low
 		if (FPSOverLimitCount === 10) {
-			objPopulation = objPopulation * maxDeltaTime / deltaTime;
+			objPopulationAdjusted = objPopulationAdjusted * maxDeltaTime / deltaTime;
 			FPSOverLimitCount = 0;
 		}
 
-		while (FPSUnderLimitCount > 50 && objPopulation < objPopulationInitial) {
-			objPopulation += 10;
+		while (FPSUnderLimitCount > 50 && objPopulationAdjusted < objPopulationMax) {
+			objPopulationAdjusted += 10;
 		}
 
 		// check duration of over/under framerate limit periods
@@ -224,7 +224,8 @@ module.exports = function(container, pointsMap, options){
 	animate();
 
 	function modifyAnts(opts){
-		objPopulation = opts.nbAnts;
+		objPopulationMax = opts.nbAnts;
+		objPopulationAdjusted = objPopulationMax;
 
 		population.forEach(function(ant){
 			ant.velocity = opts.velocity;
