@@ -1,7 +1,7 @@
 'use strict'
 
 var antFunction = require('./ant.js');
-var antsGroup = require('./antsGroup');
+var antsGroupFactory = require('./antsGroup');
 
 var random = Math.random;
 
@@ -22,7 +22,7 @@ module.exports = function(container, pointsMap, options){
 	var nbAntsPerStep = 100;
 	
 	var Ant = antFunction(container, pointsInfos, options);
-	antsGroup = antsGroup(Ant);
+	antsGroup = antsGroupFactory(Ant);
 
 	// Animation variables
 	var animID;
@@ -52,7 +52,7 @@ module.exports = function(container, pointsMap, options){
 		var rect = container.getBoundingClientRect();
 		canvas.width = rect.width;
 		canvas.height = rect.height;
-		canvas.style.backgroundColor = "rgba(250, 250, 250, 0)"; 
+		canvas.style.backgroundColor = "rgb(255, 255, 255)"; 
 		container.appendChild(canvas);
 	}
 	else{
@@ -128,7 +128,7 @@ module.exports = function(container, pointsMap, options){
 		var h = canvas.height;
 		var mouse = [lastMouseMoveEvent.clientX/w, lastMouseMoveEvent.clientY/h];
 		context.setTransform(w, 0, 0, h, 0, 0);
-		context.fillStyle = "rgba(250, 250, 250, 0.4)";
+		context.fillStyle = "rgba(255, 255, 255, 0.6)";
 		context.fillRect(0,0,w,h);
 
 		// // edges
