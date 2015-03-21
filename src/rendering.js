@@ -22,7 +22,7 @@ module.exports = function(container, pointsMap, options){
 	var nbAntsPerStep = 100;
 	
 	var Ant = antFunction(container, pointsInfos, options);
-	antsGroup = antsGroupFactory(Ant);
+	var antsGroup = antsGroupFactory(Ant);
 
 	// Animation variables
 	var animID;

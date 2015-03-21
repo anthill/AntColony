@@ -6,16 +6,17 @@ npm install
 
 then 
 
-to use it as such:
+## to run example:
 ```
-browserify start.js  -o app.js -d -v
+browserify example/start.js  -o example/app.js -d -v
 ```
+serve as you wish.
 
-to use it inside a website
+
+## to use it inside a website
 ```
 browserify index.js  -o app.js -d -v
 ```
 
 
 
-serve as you wish.

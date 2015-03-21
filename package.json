@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",    
     "build-prod": "browserify index.js  -o app.js -d -v",
     "watch-prod": "watchify index.js  -o app.js -d -v",
-    "build-dev": "browserify start.js -o app.js -d -v",
-    "watch-dev": "watchify start.js -o app.js -d -v"
+    "build-dev": "browserify example/start.js -o example/app.js -d -v",
+    "watch-dev": "watchify example/start.js -o example/app.js -d -v"
   },
   "author": "Alexandre Vallette",
   "license": "MIT",
