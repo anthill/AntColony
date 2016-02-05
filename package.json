@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",    
-    "build-prod": "browserify index.js  -o app.js -d -v",
-    "watch-prod": "watchify index.js  -o app.js -d -v",
-    "build-dev": "browserify example/start.js -o example/app.js -d -v",
-    "watch-dev": "watchify example/start.js -o example/app.js -d -v"
+    "build": "browserify example/index.js  -o browserify-bundle.js -d -v",
+    "watch": "watchify example/index.js  -o browserify-bundle.js -d -v"
   },
   "author": "Alexandre Vallette",
   "license": "MIT",
