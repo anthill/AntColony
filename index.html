@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="ANTS, collective intelligence">
+		<link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
+		<link rel="icon" href="./favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" href="./css/normalize.css">
+		<link rel="stylesheet" href="./css/antColony.css">
+
+		<title>Ants, collective intelligence</title>
+
+		<script> // Polyfill Object.assign()
+			if (!Object.assign) {
+				Object.defineProperty(Object, "assign", {
+					enumerable: false,
+					configurable: true,
+					writable: true,
+					value: function(target, firstSource) {
+						"use strict";
+						if (target === undefined || target === null)
+							throw new TypeError("Cannot convert first argument to object");
+						var to = Object(target);
+						for (var i = 1; i < arguments.length; i++) {
+							var nextSource = arguments[i];
+							if (nextSource === undefined || nextSource === null) continue;
+							var keysArray = Object.keys(Object(nextSource));
+							for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+								var nextKey = keysArray[nextIndex];
+								var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+								if (desc !== undefined && desc.enumerable) to[nextKey] = nextSource[nextKey];
+							}
+						}
+						return to;
+					}
+				});
+			}
+
+		</script>
+		
+		<script>
+		// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+		// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+		// requestAnimationFrame polyfill by Erik MÃ¶ller. fixes from Paul Irish and Tino Zijdel
+
+		// MIT license
+
+		(function() {
+			var lastTime = 0;
+			var vendors = ['ms', 'moz', 'webkit', 'o'];
+			for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+				window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+				window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+										   || window[vendors[x]+'CancelRequestAnimationFrame'];
+			}
+
+			if (!window.requestAnimationFrame)
+				window.requestAnimationFrame = function(callback, element) {
+					var currTime = new Date().getTime();
+					var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+					var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+					  timeToCall);
+					lastTime = currTime + timeToCall;
+					return id;
+				};
+
+			if (!window.cancelAnimationFrame)
+				window.cancelAnimationFrame = function(id) {
+					clearTimeout(id);
+				};
+		}());
+		</script>
+		<script async src="https://static.medium.com/embed.js"></script>
+		<script defer src="browserify-bundle.js"></script>
+	</head><!--
+
+	--><body>
+		<main id="colony">
+			<div id="terminal" tabindex="-1">
+				<div id="currentLine"><span class="prompt">ants&gt;&nbsp;</span><span class="cursor">&nbsp;</span></div>
+			</div>
+			<div id="FPS" class="monitor">FPS: </div>
+			<div id="dT" class="monitor">dT: </div>
+			<div id="warning" class="invisible">WARNING ! ANT NUMBER WILL ADAPT TO ASSURE FPS IS SUPERIOR TO 25</div>
+		</main>
+
+	</body>
+</html>

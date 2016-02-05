@@ -1,0 +1,135 @@
+/* Colony */ 
+
+canvas {
+	display: block;
+}
+
+#colony{
+	display: block; padding: 0; position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: -10;
+}
+
+@media only screen and (max-width: 1000px){
+	section[id='colony'] {
+		display: none;
+	}
+}
+
+.discrete{
+	font-size: 0.8em;
+	color: #BBB;
+}
+
+#terminal {
+	position: absolute;
+	top: 55%;
+	left: 1%;
+	font-size: 1em;
+	width: 35%;
+	height: 40%;
+	overflow: auto;
+	color: rgb(83,83,83);
+  	text-shadow: 0 0 3px #005BAE;
+}
+
+#terminal:focus{
+	outline: 0;
+}
+
+#terminal:hover{
+	background-color: rgba(0, 0, 0, 0.2);
+	color: white;
+}
+
+#terminal:hover .prompt, .command{
+	color: white;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  25% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@-webkit-keyframes blink {
+  0% { opacity: 1; }
+  25% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@-ms-keyframes blink {
+  0% { opacity: 1; }
+  25% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@-moz-keyframes blink {
+  0% { opacity: 1; }
+  25% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.prompt, .command {
+  color: rgb(83,83,83);
+  text-shadow: 0 0 3px #005BAE;
+  /*text-shadow: 0 0 3px rgba(0,100,0,50);*/
+}
+.cursor {
+  /*background: #0c0;*/
+  background: #005BAE;
+  animation: blink 1s linear infinite;
+  -webkit-animation: blink 1s infinite linear;
+  -ms-animation: blink 1s infinite linear;
+  -moz-animation: blink 1s infinite linear;
+  -webkit-box-shadow: 0 0 5px rgba(0,100,0,50);
+  -moz-box-shadow: 0 0 5px rgba(0,100,0,50);
+  -ms-box-shadow: 0 0 5px rgba(0,100,0,50);
+  -o-box-shadow: 0 0 5px rgba(0,100,0,50);
+  /*box-shadow: 0 0 5px rgba(0,100,0,50);*/
+  box-shadow: 0 0 5px #005BAE;
+}
+
+/*Colony Monitoring*/
+
+.monitor{
+	position: absolute;
+	font-family: arial;
+	font-size: 0.8em;
+	height: 20px;
+	width: 100px;
+	padding: 2px;
+	text-align: center;
+	right: 10px;
+	background-color: rgba(77, 77, 77, 0.6);
+	color: white;
+	top: 96%;
+}
+
+#dT{
+	right: 130px;
+}
+
+#FPS{
+	right: 10px;
+}
+
+#warning{
+	font-family: arial;
+	font-size: 0.7em;
+	font-weight: bold;
+	color: rgba(240, 0, 0, 0.6);
+	height: 20px;
+	position: absolute;
+	width: auto;
+	right: 10px;
+	top: 93%;
+}
+
+.invisible{
+	transition: opacity 8s;
+	opacity: 0;
+}
+
+.visible{
+	transition: opacity 1s;
+	opacity: 1;
+}

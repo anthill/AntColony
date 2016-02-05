@@ -1,8 +1,8 @@
 'use strict';
 
-var initRendering = require('./src/rendering.js');
-var initializePoints = require('./src/initializePoints.js');
-var createEdges = require('./src/createEdges.js');
+var initRendering = require('./rendering.js');
+var initializePoints = require('./initializePoints.js');
+var createEdges = require('./createEdges.js');
 // var initAnts = require('./src/initializeAnts');
 
 module.exports = function init(containerElement, options){
